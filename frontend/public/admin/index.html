@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CritterCatch 관리자</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{--mint:#1D9E75;--mint-mid:#5DCAA5;--dark:#0D1A14;--dark2:#142218;--gray:#8FA898;--fd:'Space Grotesk',sans-serif;--fb:'Noto Sans KR',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0D1A14;color:#e8f0eb;font-family:var(--fb);min-height:100vh;}
+
+/* 로그인 */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.login-box{background:#142218;border:0.5px solid rgba(93,202,165,0.2);border-radius:16px;padding:40px;width:100%;max-width:360px;text-align:center;}
+.login-logo{font-family:var(--fd);font-size:22px;font-weight:700;color:var(--mint-mid);margin-bottom:8px;}
+.login-sub{font-size:13px;color:var(--gray);margin-bottom:28px;}
+.login-box input{width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:0.5px solid rgba(93,202,165,0.2);border-radius:8px;color:#e8f0eb;font-size:14px;margin-bottom:12px;outline:none;}
+.login-box input:focus{border-color:var(--mint);}
+.btn-login{width:100%;padding:11px;border-radius:8px;background:var(--mint);color:#fff;font-size:14px;font-family:var(--fd);font-weight:500;border:none;cursor:pointer;}
+.login-err{font-size:12px;color:#F09595;margin-top:8px;}
+
+/* 앱 레이아웃 */
+#app-screen{display:none;min-height:100vh;}
+.app-layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+
+/* 사이드바 */
+.sidebar{background:#142218;border-right:0.5px solid rgba(93,202,165,0.1);padding:20px 0;}
+.sb-logo{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--mint-mid);padding:0 20px 20px;border-bottom:0.5px solid rgba(93,202,165,0.1);display:flex;align-items:center;gap:6px;}
+.sb-menu{list-style:none;margin-top:12px;}
+.sb-menu li{padding:0;}
+.sb-menu a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:var(--gray);text-decoration:none;transition:all .2s;font-family:var(--fd);}
+.sb-menu a:hover,.sb-menu a.active{color:var(--mint-mid);background:rgba(29,158,117,0.08);}
+.sb-menu a i{font-size:16px;}
+.sb-section{font-size:10px;letter-spacing:2px;color:rgba(143,168,152,0.5);padding:14px 20px 6px;text-transform:uppercase;}
+
+/* 메인 */
+.main{padding:28px 32px;overflow-y:auto;}
+.page{display:none;}
+.page.active{display:block;}
+.page-title{font-family:var(--fd);font-size:22px;font-weight:700;margin-bottom:4px;}
+.page-sub{font-size:13px;color:var(--gray);margin-bottom:28px;}
+
+/* 카드 */
+.card{background:#142218;border:0.5px solid rgba(93,202,165,0.12);border-radius:12px;padding:20px;margin-bottom:16px;}
+.card-title{font-family:var(--fd);font-size:14px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-title i{font-size:16px;color:var(--mint-mid);}
+
+/* 폼 */
+label{display:block;font-size:12px;color:var(--gray);margin-bottom:5px;}
+input[type=text],input[type=password],select,textarea{width:100%;padding:9px 12px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(93,202,165,0.2);border-radius:8px;color:#e8f0eb;font-size:13px;font-family:var(--fb);outline:none;transition:border-color .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--mint);}
+textarea{resize:vertical;min-height:200px;line-height:1.6;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-group{margin-bottom:12px;}
+.input-hint{font-size:11px;color:var(--gray);margin-top:4px;}
+
+/* 버튼 */
+.btn{padding:9px 20px;border-radius:8px;font-size:13px;font-family:var(--fd);font-weight:500;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+.btn-primary{background:var(--mint);color:#fff;}
+.btn-primary:hover{background:var(--mint-mid);}
+.btn-secondary{background:rgba(255,255,255,0.06);color:var(--gray);border:0.5px solid rgba(255,255,255,0.1);}
+.btn-secondary:hover{color:#e8f0eb;}
+.btn-danger{background:rgba(240,149,149,0.1);color:#F09595;border:0.5px solid rgba(240,149,149,0.2);}
+.btn-danger:hover{background:rgba(240,149,149,0.2);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+
+/* 포스트 목록 */
+.post-list{display:flex;flex-direction:column;gap:8px;}
+.post-item{background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.06);border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.post-item-info{flex:1;min-width:0;}
+.post-item-title{font-size:13px;font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.post-item-meta{font-size:11px;color:var(--gray);display:flex;gap:10px;}
+.post-item-actions{display:flex;gap:6px;flex-shrink:0;}
+.badge-pub{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(29,158,117,0.15);color:var(--mint-mid);}
+.badge-draft{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:var(--gray);}
+
+/* 통계 카드 */
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{background:#142218;border:0.5px solid rgba(93,202,165,0.12);border-radius:10px;padding:16px;}
+.stat-n{font-family:var(--fd);font-size:28px;font-weight:700;color:var(--mint-mid);line-height:1;margin-bottom:4px;}
+.stat-l{font-size:12px;color:var(--gray);}
+
+/* 광고 슬롯 */
+.ad-slot{background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px;margin-bottom:12px;}
+.ad-slot-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.ad-slot-name{font-family:var(--fd);font-size:13px;font-weight:500;}
+.toggle{position:relative;width:40px;height:22px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:rgba(255,255,255,0.1);border-radius:11px;transition:background .2s;}
+.toggle input:checked+.toggle-track{background:var(--mint);}
+.toggle-thumb{position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;}
+.toggle input:checked~.toggle-thumb{transform:translateX(18px);}
+.ad-code-area{font-family:monospace;font-size:11px;min-height:80px;}
+
+/* 토스트 */
+.toast{position:fixed;bottom:24px;right:24px;background:#142218;border:0.5px solid rgba(29,158,117,0.4);border-radius:10px;padding:12px 18px;font-size:13px;color:#e8f0eb;z-index:999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){
+  .app-layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .stat-cards{grid-template-columns:repeat(2,1fr);}
+  .form-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- 로그인 화면 -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo"><i class="ti ti-bug" aria-hidden="true"></i> CritterCatch</div>
+    <div class="login-sub">관리자 페이지</div>
+    <input type="password" id="pw-input" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')login()"/>
+    <button class="btn-login" onclick="login()">로그인</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- 앱 화면 -->
+<div id="app-screen">
+  <div class="app-layout">
+    <!-- 사이드바 -->
+    <nav class="sidebar">
+      <div class="sb-logo"><i class="ti ti-bug" aria-hidden="true"></i> CritterCatch</div>
+      <div class="sb-section">메뉴</div>
+      <ul class="sb-menu">
+        <li><a href="#" class="active" onclick="showPage('dashboard',this)"><i class="ti ti-dashboard" aria-hidden="true"></i> 대시보드</a></li>
+        <li><a href="#" onclick="showPage('posts',this)"><i class="ti ti-file-text" aria-hidden="true"></i> 포스트 목록</a></li>
+        <li><a href="#" onclick="showPage('write',this)"><i class="ti ti-pencil" aria-hidden="true"></i> 글쓰기</a></li>
+        <div class="sb-section">설정</div>
+        <li><a href="#" onclick="showPage('ads',this)"><i class="ti ti-ad" aria-hidden="true"></i> 광고 관리</a></li>
+        <li><a href="/crittercatch/blog/" target="_blank"><i class="ti ti-external-link" aria-hidden="true"></i> 블로그 보기</a></li>
+        <li><a href="/crittercatch/" target="_blank"><i class="ti ti-device-mobile" aria-hidden="true"></i> 대시보드</a></li>
+        <div class="sb-section"></div>
+        <li><a href="#" onclick="logout()"><i class="ti ti-logout" aria-hidden="true"></i> 로그아웃</a></li>
+      </ul>
+    </nav>
+
+    <!-- 메인 -->
+    <div class="main">
+
+      <!-- 대시보드 -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-title">대시보드</div>
+        <div class="page-sub">CritterCatch 블로그 현황</div>
+        <div class="stat-cards">
+          <div class="stat-card"><div class="stat-n" id="stat-total">-</div><div class="stat-l">전체 포스트</div></div>
+          <div class="stat-card"><div class="stat-n" id="stat-pub">-</div><div class="stat-l">발행됨</div></div>
+          <div class="stat-card"><div class="stat-n" id="stat-draft">-</div><div class="stat-l">임시저장</div></div>
+          <div class="stat-card"><div class="stat-n" id="stat-views">-</div><div class="stat-l">총 조회수</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-clock" aria-hidden="true"></i> 최근 포스트</div>
+          <div class="post-list" id="recent-posts"></div>
+        </div>
+      </div>
+
+      <!-- 포스트 목록 -->
+      <div class="page" id="page-posts">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;">
+          <div><div class="page-title">포스트 목록</div><div class="page-sub">전체 블로그 글 관리</div></div>
+          <button class="btn btn-primary" onclick="showPage('write');newPost()"><i class="ti ti-plus" aria-hidden="true"></i> 새 글쓰기</button>
+        </div>
+        <div class="card">
+          <div class="post-list" id="all-posts"></div>
+        </div>
+      </div>
+
+      <!-- 글쓰기 -->
+      <div class="page" id="page-write">
+        <div class="page-title" id="write-title">새 글쓰기</div>
+        <div class="page-sub">블로그 포스트 작성</div>
+        <input type="hidden" id="edit-id"/>
+        <div class="card">
+          <div class="form-group">
+            <label>제목 *</label>
+            <input type="text" id="f-title" placeholder="포스트 제목을 입력하세요"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>슬러그 (URL) *</label>
+              <input type="text" id="f-slug" placeholder="my-post-title"/>
+              <div class="input-hint">영문, 숫자, 하이픈만 사용 (예: cockroach-guide)</div>
+            </div>
+            <div class="form-group">
+              <label>카테고리</label>
+              <select id="f-category">
+                <option value="product">제품 소개</option>
+                <option value="review">사용 후기</option>
+                <option value="info" selected>해충 정보</option>
+                <option value="news">뉴스</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>요약 (목록에 표시)</label>
+            <input type="text" id="f-summary" placeholder="포스트 요약 (2줄 이내)"/>
+          </div>
+          <div class="form-group">
+            <label>썸네일 URL</label>
+            <input type="text" id="f-thumb" placeholder="https://..."/>
+          </div>
+          <div class="form-group">
+            <label>태그 (쉼표로 구분)</label>
+            <input type="text" id="f-tags" placeholder="바퀴벌레, 후기, 주방"/>
+          </div>
+          <div class="form-group">
+            <label>본문 (HTML 지원)</label>
+            <textarea id="f-content" placeholder="본문 내용을 입력하세요. HTML 태그 사용 가능합니다.&#10;&#10;예시:&#10;&lt;h2&gt;소제목&lt;/h2&gt;&#10;&lt;p&gt;본문 내용&lt;/p&gt;&#10;&lt;img src=&quot;이미지URL&quot; alt=&quot;설명&quot;/&gt;"></textarea>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="savePost(true)"><i class="ti ti-send" aria-hidden="true"></i> 발행하기</button>
+            <button class="btn btn-secondary" onclick="savePost(false)"><i class="ti ti-device-floppy" aria-hidden="true"></i> 임시저장</button>
+            <button class="btn btn-secondary" onclick="showPage('posts')"><i class="ti ti-x" aria-hidden="true"></i> 취소</button>
+            <button class="btn btn-danger btn-sm" id="btn-delete" style="display:none;" onclick="deletePost()"><i class="ti ti-trash" aria-hidden="true"></i> 삭제</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 광고 관리 -->
+      <div class="page" id="page-ads">
+        <div class="page-title">광고 관리</div>
+        <div class="page-sub">Google AdSense 코드를 입력하고 광고 위치를 활성화하세요</div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-title"><i class="ti ti-info-circle" aria-hidden="true"></i> 애드센스 설정 방법</div>
+          <div style="font-size:13px;color:var(--gray);line-height:1.7;">
+            1. Google AdSense (adsense.google.com) 에서 광고 단위를 만드세요<br/>
+            2. 생성된 &lt;script&gt; 코드를 아래 각 위치에 붙여넣으세요<br/>
+            3. 토글을 켜면 블로그에 바로 광고가 표시됩니다<br/>
+            4. index.html 상단의 ca-pub-XXXXXXXX 도 실제 ID로 교체하세요
+          </div>
+        </div>
+
+        <div id="ad-slots"></div>
+        <button class="btn btn-primary" onclick="saveAds()"><i class="ti ti-device-floppy" aria-hidden="true"></i> 광고 설정 저장</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'YOUR_SUPABASE_URL'
+const SB_KEY = 'YOUR_SUPABASE_ANON_KEY'
+const SERVICE_KEY = 'YOUR_SUPABASE_SERVICE_ROLE_KEY'
+const ADMIN_PW = 'crittercatch2026'
+
+const AD_SLOTS = [
+  {id:'header', label:'상단 배너', desc:'블로그 목록/포스트 최상단 (728×90 권장)'},
+  {id:'in-content', label:'본문 중간 광고', desc:'포스트 본문 중간 삽입 (336×280 권장)'},
+  {id:'sidebar', label:'사이드바', desc:'우측 사이드바 (300×250 권장)'},
+  {id:'footer', label:'하단 배너', desc:'페이지 하단 (728×90 권장)'},
+]
+
+let posts = [], adData = {}
+
+function login() {
+  const pw = document.getElementById('pw-input').value
+  if (pw === ADMIN_PW) {
+    document.getElementById('login-screen').style.display = 'none'
+    document.getElementById('app-screen').style.display = 'block'
+    loadAll()
+  } else {
+    document.getElementById('login-err').textContent = '비밀번호가 올바르지 않습니다'
+  }
+}
+
+function logout() {
+  document.getElementById('login-screen').style.display = 'flex'
+  document.getElementById('app-screen').style.display = 'none'
+  document.getElementById('pw-input').value = ''
+}
+
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.getElementById(`page-${name}`).classList.add('active')
+  document.querySelectorAll('.sb-menu a').forEach(a => a.classList.remove('active'))
+  if (el) el.classList.add('active')
+}
+
+function toast(msg, ok=true) {
+  const t = document.getElementById('toast')
+  t.textContent = (ok ? '✓ ' : '✗ ') + msg
+  t.style.borderColor = ok ? 'rgba(29,158,117,0.4)' : 'rgba(240,149,149,0.4)'
+  t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 2500)
+}
+
+async function loadAll() {
+  await loadPosts()
+  await loadAds()
+  renderDashboard()
+  renderAdSlots()
+}
+
+async function loadPosts() {
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/blog_posts?select=*&order=created_at.desc`, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` }
+    })
+    posts = await r.json()
+  } catch(e) {
+    posts = []
+  }
+  renderPostList()
+}
+
+async function loadAds() {
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/ad_settings?select=*`, {
+      headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` }
+    })
+    const arr = await r.json()
+    arr.forEach(a => adData[a.id] = a)
+  } catch(e) {}
+}
+
+function renderDashboard() {
+  const pub = posts.filter(p=>p.published).length
+  document.getElementById('stat-total').textContent = posts.length
+  document.getElementById('stat-pub').textContent = pub
+  document.getElementById('stat-draft').textContent = posts.length - pub
+  document.getElementById('stat-views').textContent = posts.reduce((s,p)=>s+(p.view_count||0),0).toLocaleString()
+  document.getElementById('recent-posts').innerHTML = posts.slice(0,5).map(p => postItemHTML(p)).join('')
+}
+
+function postItemHTML(p) {
+  return `<div class="post-item">
+    <div class="post-item-info">
+      <div class="post-item-title">${p.title}</div>
+      <div class="post-item-meta">
+        <span>${new Date(p.created_at).toLocaleDateString('ko-KR')}</span>
+        <span>조회 ${p.view_count||0}</span>
+        <span class="${p.published?'badge-pub':'badge-draft'}">${p.published?'발행됨':'임시저장'}</span>
+      </div>
+    </div>
+    <div class="post-item-actions">
+      <button class="btn btn-secondary btn-sm" onclick="editPost(${p.id})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+      <a href="/crittercatch/blog/post.html?slug=${p.slug}" target="_blank" class="btn btn-secondary btn-sm"><i class="ti ti-external-link" aria-hidden="true"></i></a>
+    </div>
+  </div>`
+}
+
+function renderPostList() {
+  const el = document.getElementById('all-posts')
+  if (!el) return
+  el.innerHTML = posts.length ? posts.map(p => postItemHTML(p)).join('') : '<div style="padding:20px;text-align:center;color:var(--gray);">포스트가 없습니다</div>'
+}
+
+function newPost() {
+  document.getElementById('write-title').textContent = '새 글쓰기'
+  document.getElementById('edit-id').value = ''
+  document.getElementById('btn-delete').style.display = 'none'
+  ;['f-title','f-slug','f-summary','f-thumb','f-tags','f-content'].forEach(id => { document.getElementById(id).value = '' })
+  document.getElementById('f-category').value = 'info'
+}
+
+function editPost(id) {
+  const p = posts.find(p=>p.id===id)
+  if (!p) return
+  document.getElementById('write-title').textContent = '포스트 수정'
+  document.getElementById('edit-id').value = id
+  document.getElementById('btn-delete').style.display = 'inline-flex'
+  document.getElementById('f-title').value = p.title || ''
+  document.getElementById('f-slug').value = p.slug || ''
+  document.getElementById('f-category').value = p.category || 'info'
+  document.getElementById('f-summary').value = p.summary || ''
+  document.getElementById('f-thumb').value = p.thumbnail_url || ''
+  document.getElementById('f-tags').value = (p.tags || []).join(', ')
+  document.getElementById('f-content').value = p.content || ''
+  showPage('write')
+}
+
+async function savePost(publish) {
+  const id = document.getElementById('edit-id').value
+  const title = document.getElementById('f-title').value.trim()
+  const slug = document.getElementById('f-slug').value.trim()
+  if (!title || !slug) { toast('제목과 슬러그는 필수입니다', false); return }
+  const data = {
+    title, slug,
+    category: document.getElementById('f-category').value,
+    summary: document.getElementById('f-summary').value.trim(),
+    thumbnail_url: document.getElementById('f-thumb').value.trim() || null,
+    tags: document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    content: document.getElementById('f-content').value,
+    published: publish,
+    updated_at: new Date().toISOString(),
+  }
+  try {
+    const method = id ? 'PATCH' : 'POST'
+    const url = id ? `${SB_URL}/rest/v1/blog_posts?id=eq.${id}` : `${SB_URL}/rest/v1/blog_posts`
+    await fetch(url, {
+      method,
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify(data)
+    })
+    toast(publish ? '발행됐습니다!' : '임시저장됐습니다')
+    await loadPosts()
+    renderDashboard()
+    showPage('posts')
+  } catch(e) { toast('저장 실패: ' + e.message, false) }
+}
+
+async function deletePost() {
+  const id = document.getElementById('edit-id').value
+  if (!id || !confirm('정말 삭제하시겠습니까?')) return
+  try {
+    await fetch(`${SB_URL}/rest/v1/blog_posts?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` }
+    })
+    toast('삭제됐습니다')
+    await loadPosts()
+    renderDashboard()
+    showPage('posts')
+  } catch(e) { toast('삭제 실패', false) }
+}
+
+function renderAdSlots() {
+  document.getElementById('ad-slots').innerHTML = AD_SLOTS.map(slot => {
+    const ad = adData[slot.id] || {}
+    return `<div class="ad-slot">
+      <div class="ad-slot-head">
+        <div>
+          <div class="ad-slot-name">${slot.label}</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:2px;">${slot.desc}</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="toggle-${slot.id}" ${ad.enabled?'checked':''}/>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <label>애드센스 코드</label>
+      <textarea class="ad-code-area" id="code-${slot.id}" placeholder="&lt;ins class=&quot;adsbygoogle&quot; ...&gt;&lt;/ins&gt;&#10;&lt;script&gt;(adsbygoogle = window.adsbygoogle || []).push({});&lt;/script&gt;">${ad.adsense_code||''}</textarea>
+    </div>`
+  }).join('')
+}
+
+async function saveAds() {
+  try {
+    for (const slot of AD_SLOTS) {
+      await fetch(`${SB_URL}/rest/v1/ad_settings?id=eq.${slot.id}`, {
+        method: 'PATCH',
+        headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          adsense_code: document.getElementById(`code-${slot.id}`).value,
+          enabled: document.getElementById(`toggle-${slot.id}`).checked,
+          updated_at: new Date().toISOString()
+        })
+      })
+    }
+    toast('광고 설정이 저장됐습니다!')
+  } catch(e) { toast('저장 실패: ' + e.message, false) }
+}
+
+// 제목 입력 시 슬러그 자동 생성
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-title')?.addEventListener('input', e => {
+    if (!document.getElementById('edit-id').value) {
+      document.getElementById('f-slug').value = e.target.value
+        .toLowerCase().replace(/[^a-z0-9가-힣\s-]/g,'').replace(/\s+/g,'-').slice(0,60)
+    }
+  })
+})
+</script>
+</body>
+</html>

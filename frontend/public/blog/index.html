@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CritterCatch 블로그 — 해충 퇴치 정보 & 후기</title>
+<meta name="description" content="AI 스마트 해충 퇴치 정보, 제품 후기, 사용법을 공유합니다."/>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{--mint:#1D9E75;--mint-mid:#5DCAA5;--dark:#0D1A14;--gray-light:#8FA898;--fd:'Space Grotesk',sans-serif;--fb:'Noto Sans KR',sans-serif;--bg:#F4F8F5;--bg2:#fff;--text:#1a2e22;--text2:#4A5A50;--border:#D8EAE0;}
+@media(prefers-color-scheme:dark){:root{--bg:#0D1A14;--bg2:#142218;--text:#e8f0eb;--text2:#8FA898;--border:rgba(93,202,165,0.15);}}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}body{background:var(--bg);color:var(--text);font-family:var(--fb);line-height:1.6;}
+nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100;}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.nav-logo{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--mint);text-decoration:none;display:flex;align-items:center;gap:6px;}
+.nav-links{display:flex;align-items:center;gap:20px;list-style:none;}
+.nav-links a{font-size:13px;color:var(--text2);text-decoration:none;font-family:var(--fd);transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--mint);}
+.btn-dash{padding:7px 16px;border-radius:50px;background:var(--mint);color:#fff;font-size:13px;font-family:var(--fd);text-decoration:none;font-weight:500;}
+.hero-blog{background:var(--dark);padding:48px 24px;text-align:center;position:relative;overflow:hidden;}
+.hero-blog::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(29,158,117,0.15) 0%,transparent 70%);}
+.hero-blog h1{font-family:var(--fd);font-size:clamp(24px,4vw,40px);font-weight:700;color:#fff;margin-bottom:10px;position:relative;}
+.hero-blog h1 span{color:var(--mint-mid);}
+.hero-blog p{font-size:15px;color:var(--gray-light);position:relative;}
+.wrap{max-width:1200px;margin:0 auto;padding:40px 24px;display:grid;grid-template-columns:1fr 300px;gap:40px;}
+@media(max-width:900px){.wrap{grid-template-columns:1fr;}.sidebar{display:none;}}
+.ad-box{background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:16px;text-align:center;margin:20px 0;}
+.ad-label{font-size:10px;color:var(--text2);letter-spacing:1px;margin-bottom:6px;}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.filter-btn{padding:6px 16px;border-radius:50px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:13px;font-family:var(--fd);cursor:pointer;transition:all .2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--mint);color:#fff;border-color:var(--mint);}
+.posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:28px;}
+.post-card{background:var(--bg2);border-radius:12px;border:1px solid var(--border);overflow:hidden;transition:transform .2s;cursor:pointer;text-decoration:none;display:block;color:inherit;}
+.post-card:hover{transform:translateY(-3px);}
+.post-thumb{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,rgba(29,158,117,0.1),rgba(13,26,20,0.05));display:flex;align-items:center;justify-content:center;font-size:36px;}
+.post-body{padding:16px;}
+.post-category{display:inline-block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mint);font-family:var(--fd);margin-bottom:8px;font-weight:500;}
+.post-title{font-family:var(--fd);font-size:15px;font-weight:600;margin-bottom:8px;line-height:1.4;color:var(--text);}
+.post-summary{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.post-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text2);}
+.post-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;}
+.post-tag{font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(29,158,117,0.08);color:var(--mint);}
+.sidebar{display:flex;flex-direction:column;gap:16px;}
+.widget{background:var(--bg2);border-radius:12px;border:1px solid var(--border);padding:18px;}
+.widget-title{font-family:var(--fd);font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text);display:flex;align-items:center;gap:7px;}
+.widget-title i{font-size:15px;color:var(--mint);}
+.cat-list{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.cat-item{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s;}
+.cat-item:last-child{border-bottom:none;}
+.cat-item:hover{color:var(--mint);}
+.cat-count{background:rgba(29,158,117,0.1);color:var(--mint);padding:1px 7px;border-radius:20px;font-size:11px;}
+.popular-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.popular-item{display:flex;gap:10px;align-items:flex-start;cursor:pointer;}
+.popular-num{font-family:var(--fd);font-size:18px;font-weight:700;color:rgba(29,158,117,0.3);line-height:1;width:22px;flex-shrink:0;}
+.popular-title{font-size:12px;color:var(--text2);line-height:1.4;transition:color .2s;}
+.popular-item:hover .popular-title{color:var(--mint);}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:5px;}
+.tag-cloud-item{font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(29,158,117,0.06);color:var(--mint);border:1px solid rgba(29,158,117,0.15);cursor:pointer;transition:all .2s;}
+.tag-cloud-item:hover{background:var(--mint);color:#fff;}
+.pagination{display:flex;gap:5px;justify-content:center;margin-top:8px;}
+.page-btn{width:34px;height:34px;border-radius:7px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.page-btn:hover,.page-btn.active{background:var(--mint);color:#fff;border-color:var(--mint);}
+footer{background:var(--dark);padding:28px 24px;margin-top:48px;}
+.footer-in{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-logo{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--mint-mid);}
+footer p{font-size:12px;color:var(--gray-light);}
+.footer-links{display:flex;gap:14px;}
+.footer-links a{font-size:12px;color:var(--gray-light);text-decoration:none;}
+.footer-links a:hover{color:var(--mint-mid);}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-in">
+    <a href="/crittercatch/landing.html" class="nav-logo"><i class="ti ti-bug" aria-hidden="true"></i> CritterCatch</a>
+    <ul class="nav-links">
+      <li><a href="/crittercatch/landing.html">홈</a></li>
+      <li><a href="/crittercatch/blog/" class="active">블로그</a></li>
+      <li><a href="/crittercatch/">대시보드</a></li>
+    </ul>
+    <a href="/crittercatch/" class="btn-dash">대시보드 열기</a>
+  </div>
+</nav>
+
+<div class="hero-blog">
+  <h1>CritterCatch <span>블로그</span></h1>
+  <p>해충 퇴치 정보, 제품 후기, 실제 사용 사례를 공유합니다</p>
+</div>
+
+<!-- 상단 광고 -->
+<div style="max-width:1200px;margin:20px auto;padding:0 24px;">
+  <div class="ad-box"><div class="ad-label">ADVERTISEMENT</div><div id="adsense-header"></div></div>
+</div>
+
+<div class="wrap">
+  <main>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterPosts('all',this)">전체</button>
+      <button class="filter-btn" onclick="filterPosts('product',this)">제품 소개</button>
+      <button class="filter-btn" onclick="filterPosts('review',this)">사용 후기</button>
+      <button class="filter-btn" onclick="filterPosts('info',this)">해충 정보</button>
+      <button class="filter-btn" onclick="filterPosts('news',this)">뉴스</button>
+    </div>
+    <div class="posts-grid" id="posts-grid"><div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2);">불러오는 중...</div></div>
+    <div class="ad-box"><div class="ad-label">ADVERTISEMENT</div><div id="adsense-mid"></div></div>
+    <div class="pagination" id="pagination"></div>
+  </main>
+
+  <aside class="sidebar">
+    <div class="widget">
+      <div class="widget-title"><i class="ti ti-category" aria-hidden="true"></i> 카테고리</div>
+      <ul class="cat-list">
+        <li class="cat-item" onclick="filterPosts('product')">제품 소개 <span class="cat-count" id="cnt-product">-</span></li>
+        <li class="cat-item" onclick="filterPosts('review')">사용 후기 <span class="cat-count" id="cnt-review">-</span></li>
+        <li class="cat-item" onclick="filterPosts('info')">해충 정보 <span class="cat-count" id="cnt-info">-</span></li>
+        <li class="cat-item" onclick="filterPosts('news')">뉴스 <span class="cat-count" id="cnt-news">-</span></li>
+      </ul>
+    </div>
+    <div class="ad-box"><div class="ad-label">ADVERTISEMENT</div><div id="adsense-sidebar"></div></div>
+    <div class="widget">
+      <div class="widget-title"><i class="ti ti-flame" aria-hidden="true"></i> 인기글</div>
+      <ul class="popular-list" id="popular-list"></ul>
+    </div>
+    <div class="widget">
+      <div class="widget-title"><i class="ti ti-tags" aria-hidden="true"></i> 태그</div>
+      <div class="tag-cloud" id="tag-cloud"></div>
+    </div>
+    <div class="widget" style="background:rgba(29,158,117,0.06);border-color:rgba(29,158,117,0.3);text-align:center;">
+      <div style="font-size:24px;margin-bottom:8px;">📱</div>
+      <div style="font-family:var(--fd);font-size:13px;font-weight:600;margin-bottom:5px;">지금 바로 시작하세요</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:12px;">AI 해충 감지 무료 체험</div>
+      <a href="/crittercatch/" style="display:block;padding:8px;border-radius:7px;background:var(--mint);color:#fff;text-decoration:none;font-size:12px;font-family:var(--fd);font-weight:500;">대시보드 열기 →</a>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <div class="footer-logo">CritterCatch</div>
+    <div class="footer-links">
+      <a href="/crittercatch/landing.html">홈</a>
+      <a href="/crittercatch/blog/">블로그</a>
+      <a href="/crittercatch/">대시보드</a>
+    </div>
+    <p>© 2026 CritterCatch. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const SB_URL='YOUR_SUPABASE_URL', SB_KEY='YOUR_SUPABASE_ANON_KEY'
+const CAT_MAP={product:'제품 소개',review:'사용 후기',info:'해충 정보',news:'뉴스'}
+const CAT_EMOJI={product:'📦',review:'⭐',info:'🔬',news:'📰'}
+const DUMMY=[
+  {id:1,slug:'cockroach-guide',title:'바퀴벌레 완전 퇴치 가이드 — AI 감지기로 한 달 만에 없앤 후기',summary:'주방에서 바퀴벌레가 계속 나와서 CritterCatch를 설치했습니다.',category:'review',tags:['바퀴벌레','후기'],created_at:new Date().toISOString(),view_count:324,published:true},
+  {id:2,slug:'mosquito-uv',title:'모기가 싫어하는 것 5가지 — UV 트랩이 효과적인 이유',summary:'모기는 빛을 좋아합니다. UV 파장을 이용한 친환경 포획 방법.',category:'info',tags:['모기','UV'],created_at:new Date(Date.now()-86400000).toISOString(),view_count:218,published:true},
+  {id:3,slug:'baby-mobile',title:'아기방 모기 퇴치기 — 모빌형 CritterCatch 사용 후기',summary:'신생아 아기를 위해 모빌형 모기 퇴치기를 사용해봤습니다.',category:'review',tags:['아기','모빌'],created_at:new Date(Date.now()-172800000).toISOString(),view_count:156,published:true},
+  {id:4,slug:'restaurant-hygiene',title:'식당 위생 점검 완벽 대비 — CritterCatch 업소용 후기',summary:'식약처 점검 전 CritterCatch를 설치했습니다.',category:'review',tags:['식당','위생'],created_at:new Date(Date.now()-259200000).toISOString(),view_count:412,published:true},
+  {id:5,slug:'camping-pest',title:'캠핑할 때 모기 완전 차단하는 법',summary:'캠핑 올인원 버전으로 텐트 안 모기를 완전히 차단했습니다.',category:'info',tags:['캠핑','모기'],created_at:new Date(Date.now()-345600000).toISOString(),view_count:289,published:true},
+  {id:6,slug:'crittercatch-intro',title:'CritterCatch 제품 소개 — AI로 해충을 자동 퇴치하다',summary:'AI 카메라가 감지하고, 소량 약품을 자동 분사합니다.',category:'product',tags:['제품소개','AI'],created_at:new Date(Date.now()-432000000).toISOString(),view_count:534,published:true},
+]
+let allPosts=[], currentFilter='all', currentPage=1
+const PAGE_SIZE=6
+
+async function loadPosts(){
+  try{
+    const r=await fetch(`${SB_URL}/rest/v1/blog_posts?select=*&published=eq.true&order=created_at.desc`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}})
+    allPosts=await r.json()
+  }catch(e){allPosts=DUMMY}
+  renderPosts(); renderSidebar(); loadAds()
+}
+
+async function loadAds(){
+  try{
+    const r=await fetch(`${SB_URL}/rest/v1/ad_settings?select=*`,{headers:{apikey:SB_KEY,Authorization:`Bearer ${SB_KEY}`}})
+    const ads=await r.json()
+    ads.forEach(a=>{
+      if(a.enabled&&a.adsense_code){
+        const el=document.getElementById(`adsense-${a.id==='in-content'?'mid':a.id}`)
+        if(el)el.innerHTML=a.adsense_code
+      }
+    })
+  }catch(e){}
+}
+
+function filterPosts(cat,btn){
+  currentFilter=cat; currentPage=1
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'))
+  if(btn)btn.classList.add('active')
+  renderPosts()
+}
+
+function renderPosts(){
+  const filtered=currentFilter==='all'?allPosts:allPosts.filter(p=>p.category===currentFilter)
+  const pagePosts=filtered.slice((currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE)
+  const grid=document.getElementById('posts-grid')
+  if(!pagePosts.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2);">포스트가 없습니다</div>';document.getElementById('pagination').innerHTML='';return}
+  grid.innerHTML=pagePosts.map(p=>`
+    <a href="/crittercatch/blog/post.html?slug=${p.slug}" class="post-card">
+      <div class="post-thumb">${p.thumbnail_url?`<img src="${p.thumbnail_url}" style="width:100%;height:100%;object-fit:cover;" alt="">`:CAT_EMOJI[p.category]||'📝'}</div>
+      <div class="post-body">
+        <span class="post-category">${CAT_MAP[p.category]||p.category}</span>
+        <div class="post-title">${p.title}</div>
+        <div class="post-summary">${p.summary||''}</div>
+        <div class="post-meta"><span><i class="ti ti-calendar" style="font-size:11px;"></i> ${new Date(p.created_at).toLocaleDateString('ko-KR')}</span><span><i class="ti ti-eye" style="font-size:11px;"></i> ${p.view_count||0}</span></div>
+        ${p.tags?.length?`<div class="post-tags">${p.tags.map(t=>`<span class="post-tag">${t}</span>`).join('')}</div>`:''}
+      </div>
+    </a>`).join('')
+  const totalPages=Math.ceil(filtered.length/PAGE_SIZE)
+  document.getElementById('pagination').innerHTML=totalPages>1?Array.from({length:totalPages},(_,i)=>`<button class="page-btn ${i+1===currentPage?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join(''):''
+}
+
+function goPage(n){currentPage=n;renderPosts();window.scrollTo(0,0);}
+
+function renderSidebar(){
+  ;['product','review','info','news'].forEach(c=>{const el=document.getElementById(`cnt-${c}`);if(el)el.textContent=allPosts.filter(p=>p.category===c).length})
+  const popular=[...allPosts].sort((a,b)=>(b.view_count||0)-(a.view_count||0)).slice(0,5)
+  document.getElementById('popular-list').innerHTML=popular.map((p,i)=>`<li class="popular-item" onclick="location.href='/crittercatch/blog/post.html?slug=${p.slug}'"><span class="popular-num">${i+1}</span><span class="popular-title">${p.title}</span></li>`).join('')
+  const tags=[...new Set(allPosts.flatMap(p=>p.tags||[]))]
+  document.getElementById('tag-cloud').innerHTML=tags.map(t=>`<span class="tag-cloud-item">${t}</span>`).join('')
+}
+
+loadPosts()
+</script>
+</body>
+</html>
