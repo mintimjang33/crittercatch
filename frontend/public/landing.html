@@ -214,8 +214,13 @@ footer p{font-size:12px;color:var(--gray);}
     <li><a href="#home">가정용</a></li>
     <li><a href="#biz">업소용</a></li>
     <li><a href="#camp">캠핑용</a></li>
+    <li><a href="#baby">아기용</a></li>
     <li><a href="#plans">요금제</a></li>
-    <li><a href="/crittercatch/" class="btn-nav">대시보드 열기</a></li>
+    <li style="display:flex;gap:4px;">
+      <button onclick="setLang('ko')" id="btn-ko" style="padding:5px 10px;border-radius:20px;border:0.5px solid rgba(93,202,165,0.4);background:rgba(29,158,117,0.8);color:#fff;font-size:12px;cursor:pointer;font-family:var(--fd);">KO</button>
+      <button onclick="setLang('en')" id="btn-en" style="padding:5px 10px;border-radius:20px;border:0.5px solid rgba(255,255,255,0.15);background:transparent;color:var(--gray-light);font-size:12px;cursor:pointer;font-family:var(--fd);">EN</button>
+    </li>
+    <li><a href="/crittercatch/" class="btn-nav" data-ko="대시보드 열기" data-en="Open Dashboard">대시보드 열기</a></li>
   </ul>
 </nav>
 
@@ -223,9 +228,9 @@ footer p{font-size:12px;color:var(--gray);}
 <div class="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <div class="badge"><span class="bdot"></span>AI 기반 실시간 해충 감지</div>
-  <h1>해충이 나타나면<br/><span>스스로 잡습니다</span></h1>
-  <p class="hero-sub">카메라가 감지하고, AI가 판별하고, 약품이 자동 분사됩니다.<br/>당신은 앱에서 숫자가 줄어드는 것만 보면 돼요.</p>
+  <div class="badge"><span class="bdot"></span><span data-i18n="hero-badge">AI 기반 실시간 해충 감지</span></div>
+  <h1 data-i18n="hero-h1">해충이 나타나면<br/><span>스스로 잡습니다</span></h1>
+  <p class="hero-sub" data-i18n="hero-sub">카메라가 감지하고, AI가 판별하고, 약품이 자동 분사됩니다.<br/>당신은 앱에서 숫자가 줄어드는 것만 보면 돼요.</p>
   <div class="hero-btns">
     <a href="/crittercatch/" class="btn-p"><i class="ti ti-device-mobile"></i> 대시보드 바로가기</a>
     <a href="#home" class="btn-o">제품 살펴보기</a>
@@ -234,32 +239,36 @@ footer p{font-size:12px;color:var(--gray);}
   <div class="target-cards">
     <a href="#home" class="tc">
       <div class="tc-icon">🏠</div>
-      <div class="tc-text"><div class="tc-title">가정용</div><div class="tc-sub">주방 · 욕실 · 거실</div></div>
+      <div class="tc-text"><div class="tc-title" data-i18n="tc-home">가정용</div><div class="tc-sub" data-i18n="tc-home-sub">주방 · 욕실 · 거실</div></div>
     </a>
     <a href="#biz" class="tc">
       <div class="tc-icon">🍽️</div>
-      <div class="tc-text"><div class="tc-title">업소용</div><div class="tc-sub">식당 · 편의점 · 학교</div></div>
+      <div class="tc-text"><div class="tc-title" data-i18n="tc-biz">업소용</div><div class="tc-sub" data-i18n="tc-biz-sub">식당 · 편의점 · 학교</div></div>
     </a>
     <a href="#camp" class="tc">
       <div class="tc-icon">🏕️</div>
-      <div class="tc-text"><div class="tc-title">캠핑용</div><div class="tc-sub">텐트 · 차박 · 야외</div></div>
+      <div class="tc-text"><div class="tc-title" data-i18n="tc-camp">캠핑용</div><div class="tc-sub" data-i18n="tc-camp-sub">텐트 · 차박 · 야외</div></div>
+    </a>
+    <a href="#home" class="tc" style="border-color:rgba(200,150,255,0.3);">
+      <div class="tc-icon">🍼</div>
+      <div class="tc-text"><div class="tc-title" data-i18n="tc-baby">아기용</div><div class="tc-sub" data-i18n="tc-baby-sub">모빌형 · 베이비캠 · 성장형</div></div>
     </a>
   </div>
 </div>
 
 <!-- STATS -->
 <div class="stats">
-  <div class="stat"><div class="sn">24h</div><div class="sl">무인 자동 작동</div></div>
-  <div class="stat"><div class="sn">0.2ml</div><div class="sl">소량 정밀 분사</div></div>
-  <div class="stat"><div class="sn">90%+</div><div class="sl">AI 감지 정확도</div></div>
-  <div class="stat"><div class="sn">3종</div><div class="sl">바퀴벌레·모기·파리</div></div>
+  <div class="stat"><div class="sn">24h</div><div class="sl" data-i18n="stat1-l">무인 자동 작동</div></div>
+  <div class="stat"><div class="sn">0.2ml</div><div class="sl" data-i18n="stat2-l">소량 정밀 분사</div></div>
+  <div class="stat"><div class="sn">90%+</div><div class="sl" data-i18n="stat3-l">AI 감지 정확도</div></div>
+  <div class="stat"><div class="sn">3종</div><div class="sl" data-i18n="stat4-l">바퀴벌레·모기·파리</div></div>
 </div>
 
 <!-- ══ 가정용 ══ -->
 <section class="sec" id="home">
-  <div class="eye">가정용</div>
-  <h2 class="st">우리 집 구석구석<br/>24시간 지킵니다</h2>
-  <p class="ss">설치하고 잊어버리세요. 바퀴벌레가 나타나면 자동으로 퇴치하고, 앱으로 알려줍니다.</p>
+  <div class="eye" data-i18n="home-eye">가정용</div>
+  <h2 class="st" data-i18n="home-h2">우리 집 구석구석<br/>24시간 지킵니다</h2>
+  <p class="ss" data-i18n="home-sub">설치하고 잊어버리세요. 바퀴벌레가 나타나면 자동으로 퇴치하고, 앱으로 알려줍니다.</p>
 
   <div class="home-grid">
     <div class="home-devices">
@@ -281,13 +290,28 @@ footer p{font-size:12px;color:var(--gray);}
         <div class="dc-icon">🦟</div>
         <div class="dc-body">
           <h4>모기 감지기 (창문형)</h4>
-          <p>창문 틀에 붙이는 슬림 디자인. UV로 유인하고 끈끈이로 포획합니다. 약품 없이 안전하게.</p>
+          <p>창문 틀에 붙이는 슬림 디자인. UV로 유인하고 흡입 팬으로 포획합니다. 약품 없이 안전하게.</p>
           <div class="dc-tags">
             <span class="tag">UV LED</span>
-            <span class="tag">끈끈이 트랩</span>
+            <span class="tag">흡입 팬 포획</span>
             <span class="tag">무약품</span>
             <span class="tag">아기 안전</span>
             <span class="tag">USB-C 충전</span>
+          </div>
+        </div>
+      </div>
+      <div class="device-card" style="border-color:rgba(200,150,255,0.3);background:rgba(200,150,255,0.04);">
+        <div class="dc-icon">🍼</div>
+        <div class="dc-body">
+          <h4>아기 모빌형 <span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(200,150,255,0.15);color:#8B5CF6;margin-left:4px;font-weight:400;">성장형</span></h4>
+          <p>아기 침대 위에 모빌처럼 달아두세요. 모기를 흡입 포획하고, 베이비캠·수면 모니터링까지 한 번에. 아이가 크면 거치대만 바꿔서 일반 모기 퇴치기로 계속 사용합니다.</p>
+          <div class="dc-tags">
+            <span class="tag">UV + 흡입 팬</span>
+            <span class="tag">베이비캠</span>
+            <span class="tag">수면 모니터링</span>
+            <span class="tag">울음 감지 알림</span>
+            <span class="tag">약품 NO</span>
+            <span class="tag">성장 후 일반형 전환</span>
           </div>
         </div>
       </div>
@@ -384,9 +408,9 @@ footer p{font-size:12px;color:var(--gray);}
 <!-- ══ 업소용 ══ -->
 <div class="sec-alt" id="biz">
   <div class="sec-alt-in">
-    <div class="eye">업소용</div>
-    <h2 class="st">위생 점검도<br/>데이터로 증명하세요</h2>
-    <p class="ss">식약처 점검이 두렵지 않습니다. 24시간 자동 방역에 리포트까지 자동 생성해드려요.</p>
+    <div class="eye" data-i18n="biz-eye">업소용</div>
+    <h2 class="st" data-i18n="biz-h2">위생 점검도<br/>데이터로 증명하세요</h2>
+    <p class="ss" data-i18n="biz-sub">식약처 점검이 두렵지 않습니다. 24시간 자동 방역에 리포트까지 자동 생성해드려요.</p>
 
     <div class="biz-grid">
       <div class="biz-features">
@@ -464,11 +488,131 @@ footer p{font-size:12px;color:var(--gray);}
 
 <div class="divider"></div>
 
+<!-- ══ 아기용 ══ -->
+<section class="sec" id="baby">
+  <div class="eye" data-i18n="baby-eye">아기용</div>
+  <h2 class="st" data-i18n="baby-h2">아기 때 사면<br/>평생 씁니다</h2>
+  <p class="ss" data-i18n="baby-sub">모빌로 시작해서 모기 퇴치기로 계속. 기기는 그대로, 거치대만 바꾸면 됩니다.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;margin-top:52px;">
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- 모빌 단계 -->
+      <div style="background:rgba(200,150,255,0.06);border:0.5px solid rgba(200,150,255,0.25);border-radius:14px;padding:20px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="font-size:22px;">🍼</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:14px;font-weight:600;">0~24개월 — 모빌 모드</div>
+            <div style="font-size:11px;color:var(--gray-light);">침대 봉에 달아서 사용</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:#8B5CF6;">✓</span> UV LED로 모기 유인 → 흡입 팬으로 포획
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:#8B5CF6;">✓</span> IR 카메라로 아기 실시간 영상 (베이비캠)
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:#8B5CF6;">✓</span> 수면 모니터링 · 움직임 감지
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:#8B5CF6;">✓</span> 울음 감지 시 스마트폰 즉시 알림
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:#8B5CF6;">✓</span> 약품 완전 없음 · 흡입구 크기 아기 손가락 안전
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:#8B5CF6;">✓</span> 야간 IR 자동 전환 · 무소음 팬
+          </div>
+        </div>
+      </div>
+
+      <!-- 화살표 -->
+      <div style="text-align:center;font-size:20px;color:var(--gray-light);">↓ 아이가 크면</div>
+
+      <!-- 일반형 전환 -->
+      <div style="background:rgba(29,158,117,0.06);border:0.5px solid rgba(93,202,165,0.25);border-radius:14px;padding:20px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="font-size:22px;">🦟</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:14px;font-weight:600;">그 이후 — 일반 모기 퇴치기</div>
+            <div style="font-size:11px;color:var(--gray-light);">거치대만 교체, 기기는 그대로</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:var(--mint);">✓</span> 책상 · 선반 스탠드형으로 변신
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:var(--mint);">✓</span> 창문 부착 브라켓 추가 가능
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:var(--mint);">✓</span> 캠핑 고리 추가 → 야외 사용 가능
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--gray-light);">
+            <span style="color:var(--mint);">✓</span> 앱은 모기 퇴치 모드로 자동 전환
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 오른쪽: 비교표 + 마케팅 포인트 -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <div style="background:var(--dark2);border-radius:14px;border:0.5px solid rgba(255,255,255,0.08);padding:20px;">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:600;margin-bottom:14px;color:var(--gray-light);">기존 제품 vs CritterCatch 아기용</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;font-size:11px;">
+          <div style="padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:6px 0 0 0;color:var(--gray-light);">제품</div>
+          <div style="padding:8px 10px;background:rgba(255,255,255,0.04);color:var(--gray-light);">기존 (따로 구매)</div>
+          <div style="padding:8px 10px;background:rgba(29,158,117,0.1);border-radius:0 6px 0 0;color:var(--mint-mid);font-weight:500;">CritterCatch</div>
+
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--gray-light);">베이비캠</div>
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--gray-light);">5~15만원</div>
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--mint-mid);">✓ 포함</div>
+
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--gray-light);">수면 모니터</div>
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--gray-light);">10~30만원</div>
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--mint-mid);">✓ 포함</div>
+
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--gray-light);">모기 퇴치기</div>
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--gray-light);">2~5만원</div>
+          <div style="padding:8px 10px;border-bottom:0.5px solid rgba(255,255,255,0.05);font-size:11px;color:var(--mint-mid);">✓ 포함</div>
+
+          <div style="padding:8px 10px;font-size:11px;font-weight:500;color:var(--gray-light);">합계</div>
+          <div style="padding:8px 10px;font-size:11px;font-weight:500;color:var(--gray-light);">17~50만원</div>
+          <div style="padding:8px 10px;font-size:11px;font-weight:500;color:var(--mint-mid);">하나로 전부</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(200,150,255,0.06);border:0.5px solid rgba(200,150,255,0.2);border-radius:14px;padding:20px;">
+        <div style="font-family:var(--fd);font-size:13px;font-weight:600;margin-bottom:10px;color:#C4B5FD;">💡 성장형 설계</div>
+        <div style="font-size:13px;color:var(--gray-light);line-height:1.7;">
+          기기 본체는 그대로, <strong style="color:#C4B5FD;">거치대만 교체</strong>하면 됩니다.<br/>
+          모빌 거치대 → 스탠드 → 창문 브라켓 → 캠핑 고리<br/>
+          한 번 사면 아이가 자라도 계속 씁니다.
+        </div>
+      </div>
+
+      <div style="background:rgba(29,158,117,0.06);border:0.5px solid rgba(93,202,165,0.2);border-radius:14px;padding:16px;text-align:center;">
+        <div style="font-size:11px;color:var(--gray-light);margin-bottom:8px;">맘카페에서 화제 중</div>
+        <div style="font-family:var(--fd);font-size:13px;font-weight:600;margin-bottom:4px;">"베이비캠이랑 모기 퇴치기를 따로 살 필요가 없어요"</div>
+        <div style="font-size:11px;color:var(--gray-light);">— 7개월 아기 엄마 후기</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- ══ 캠핑용 ══ -->
 <section class="sec" id="camp">
-  <div class="eye">캠핑용</div>
-  <h2 class="st">텐트 안에도<br/>바퀴벌레 없는 밤</h2>
-  <p class="ss">충전해서 텐트에 걸면 끝. 모기도, 바퀴벌레도, 파리도 알아서 처리합니다.</p>
+  <div class="eye" data-i18n="camp-eye">캠핑용</div>
+  <h2 class="st" data-i18n="camp-h2">텐트 안에도<br/>바퀴벌레 없는 밤</h2>
+  <p class="ss" data-i18n="camp-sub">충전해서 텐트에 걸면 끝. 모기도, 바퀴벌레도, 파리도 알아서 처리합니다.</p>
 
   <div class="camp-grid">
     <div class="camp-visual">
@@ -564,9 +708,9 @@ footer p{font-size:12px;color:var(--gray);}
 <!-- HOW IT WORKS -->
 <div class="sec-alt">
   <div class="sec-alt-in">
-    <div class="eye">작동 방식</div>
-    <h2 class="st">전원 하나면 끝</h2>
-    <p class="ss">복잡한 설정 없습니다. 연결하면 자동으로 시작해요.</p>
+    <div class="eye" data-i18n="how-eye">작동 방식</div>
+    <h2 class="st" data-i18n="how-h2">전원 하나면 끝</h2>
+    <p class="ss" data-i18n="how-sub">복잡한 설정 없습니다. 연결하면 자동으로 시작해요.</p>
     <div class="steps">
       <div class="step"><div class="step-n">STEP 01</div><div class="step-i">📡</div><h3>PIR 센서 대기</h3><p>저전력으로 열감지 대기. 움직임 포착 시 카메라가 즉시 켜집니다.</p></div>
       <div class="step"><div class="step-n">STEP 02</div><div class="step-i">📷</div><h3>IR 카메라 촬영</h3><p>적외선 LED 4개로 어둠 속에서도 선명하게 촬영합니다.</p></div>
@@ -579,9 +723,9 @@ footer p{font-size:12px;color:var(--gray);}
 
 <!-- PLANS -->
 <section class="sec" id="plans">
-  <div class="eye">요금제</div>
-  <h2 class="st">필요한 만큼만<br/>선택하세요</h2>
-  <p class="ss">기기는 한 번 구매, 서비스는 용도에 맞게. 언제든 변경 가능합니다.</p>
+  <div class="eye" data-i18n="plans-eye">요금제</div>
+  <h2 class="st" data-i18n="plans-h2">필요한 만큼만<br/>선택하세요</h2>
+  <p class="ss" data-i18n="plans-sub">기기는 한 번 구매, 서비스는 용도에 맞게. 언제든 변경 가능합니다.</p>
   <div class="plans-grid">
     <div class="plan">
       <div class="pn">실시간 보기</div>
@@ -640,8 +784,8 @@ footer p{font-size:12px;color:var(--gray);}
 <!-- CTA -->
 <div class="cta">
   <div class="cta-bg"></div>
-  <h2>지금 바로<br/><span>시작해보세요</span></h2>
-  <p>첫 달 무료 체험 · 언제든 해지 가능 · 설치 10분</p>
+  <h2 data-i18n="cta-h2">지금 바로<br/><span>시작해보세요</span></h2>
+  <p data-i18n="cta-p">첫 달 무료 체험 · 언제든 해지 가능 · 설치 10분</p>
   <div class="cta-btns">
     <a href="/crittercatch/" class="btn-p"><i class="ti ti-device-mobile"></i> 대시보드 바로가기</a>
     <a href="#plans" class="btn-o">요금제 보기</a>
@@ -654,6 +798,108 @@ footer p{font-size:12px;color:var(--gray);}
   <p>AI 스마트 해충 감지 & 퇴치 · 대한민국</p>
   <p>© 2026 CritterCatch. All rights reserved.</p>
 </footer>
+
+
+<script>
+const I18N = {
+  ko: {
+    // 네비
+    'nav-home': '홈', 'nav-home-sub': '가정용', 'nav-biz': '업소용', 'nav-camp': '캠핑용', 'nav-baby': '아기용', 'nav-plans': '요금제', 'nav-dash': '대시보드 열기',
+    // 히어로
+    'hero-badge': 'AI 기반 실시간 해충 감지',
+    'hero-h1': '해충이 나타나면<br/><span>스스로 잡습니다</span>',
+    'hero-sub': '카메라가 감지하고, AI가 판별하고, 약품이 자동 분사됩니다.<br/>당신은 앱에서 숫자가 줄어드는 것만 보면 돼요.',
+    'hero-btn1': '대시보드 바로가기', 'hero-btn2': '제품 살펴보기',
+    'tc-home': '가정용', 'tc-home-sub': '주방 · 욕실 · 거실',
+    'tc-biz': '업소용', 'tc-biz-sub': '식당 · 편의점 · 학교',
+    'tc-camp': '캠핑용', 'tc-camp-sub': '텐트 · 차박 · 야외',
+    'tc-baby': '아기용', 'tc-baby-sub': '모빌형 · 베이비캠 · 성장형',
+    // 통계
+    'stat1-n': '24h', 'stat1-l': '무인 자동 작동',
+    'stat2-n': '0.2ml', 'stat2-l': '소량 정밀 분사',
+    'stat3-n': '90%+', 'stat3-l': 'AI 감지 정확도',
+    'stat4-n': '3종', 'stat4-l': '바퀴벌레·모기·파리',
+    // 가정용
+    'home-eye': '가정용', 'home-h2': '우리 집 구석구석<br/>24시간 지킵니다',
+    'home-sub': '설치하고 잊어버리세요. 바퀴벌레가 나타나면 자동으로 퇴치하고, 앱으로 알려줍니다.',
+    // 업소용
+    'biz-eye': '업소용', 'biz-h2': '위생 점검도<br/>데이터로 증명하세요',
+    'biz-sub': '식약처 점검이 두렵지 않습니다. 24시간 자동 방역에 리포트까지 자동 생성해드려요.',
+    // 아기용
+    'baby-eye': '아기용', 'baby-h2': '아기 때 사면<br/>평생 씁니다',
+    'baby-sub': '모빌로 시작해서 모기 퇴치기로 계속. 기기는 그대로, 거치대만 바꾸면 됩니다.',
+    // 캠핑용
+    'camp-eye': '캠핑용', 'camp-h2': '텐트 안에도<br/>바퀴벌레 없는 밤',
+    'camp-sub': '충전해서 텐트에 걸면 끝. 모기도, 바퀴벌레도, 파리도 알아서 처리합니다.',
+    // 작동방식
+    'how-eye': '작동 방식', 'how-h2': '전원 하나면 끝',
+    'how-sub': '복잡한 설정 없습니다. 연결하면 자동으로 시작해요.',
+    // 요금제
+    'plans-eye': '요금제', 'plans-h2': '필요한 만큼만<br/>선택하세요',
+    'plans-sub': '기기는 한 번 구매, 서비스는 용도에 맞게. 언제든 변경 가능합니다.',
+    // CTA
+    'cta-h2': '지금 바로<br/><span>시작해보세요</span>',
+    'cta-p': '첫 달 무료 체험 · 언제든 해지 가능 · 설치 10분',
+    'cta-btn1': '대시보드 바로가기', 'cta-btn2': '요금제 보기',
+  },
+  en: {
+    'nav-home': 'Home', 'nav-home-sub': 'Home Use', 'nav-biz': 'Business', 'nav-camp': 'Camping', 'nav-baby': 'Baby', 'nav-plans': 'Pricing', 'nav-dash': 'Open Dashboard',
+    'hero-badge': 'AI-Powered Real-Time Pest Detection',
+    'hero-h1': 'Pests appear,<br/><span>it handles them</span>',
+    'hero-sub': 'Camera detects, AI identifies, spray activates automatically.<br/>Just watch the numbers drop in the app.',
+    'hero-btn1': 'Open Dashboard', 'hero-btn2': 'See Products',
+    'tc-home': 'Home', 'tc-home-sub': 'Kitchen · Bath · Living',
+    'tc-biz': 'Business', 'tc-biz-sub': 'Restaurant · Store · School',
+    'tc-camp': 'Camping', 'tc-camp-sub': 'Tent · Car Camping · Outdoor',
+    'tc-baby': 'Baby', 'tc-baby-sub': 'Mobile · Baby Cam · Grows with baby',
+    'stat1-n': '24h', 'stat1-l': 'Fully Automated',
+    'stat2-n': '0.2ml', 'stat2-l': 'Precision Spray',
+    'stat3-n': '90%+', 'stat3-l': 'AI Detection Accuracy',
+    'stat4-n': '3 Types', 'stat4-l': 'Roach · Mosquito · Fly',
+    'home-eye': 'Home Use', 'home-h2': 'Every corner of your home,<br/>protected 24/7',
+    'home-sub': 'Set it and forget it. When pests appear, it auto-eliminates and notifies your phone.',
+    'biz-eye': 'Business', 'biz-h2': 'Prove your hygiene<br/>with real data',
+    'biz-sub': 'No more worrying about health inspections. 24/7 auto pest control with automatic reports.',
+    'baby-eye': 'Baby', 'baby-h2': 'Buy it for baby,<br/>use it for life',
+    'baby-sub': 'Starts as a mobile, grows into a mosquito trap. Same device, just swap the mount.',
+    'camp-eye': 'Camping', 'camp-h2': 'Pest-free nights<br/>even in a tent',
+    'camp-sub': 'Charge it, hang it in your tent, done. Mosquitoes, roaches, flies — all handled.',
+    'how-eye': 'How It Works', 'how-h2': 'Just plug it in',
+    'how-sub': 'No complicated setup. Connect and it starts automatically.',
+    'plans-eye': 'Pricing', 'plans-h2': 'Choose what<br/>you need',
+    'plans-sub': 'One-time device purchase, flexible service plan. Change anytime.',
+    'cta-h2': 'Start right now<br/><span>today</span>',
+    'cta-p': 'First month free · Cancel anytime · 10-min setup',
+    'cta-btn1': 'Open Dashboard', 'cta-btn2': 'View Pricing',
+  }
+}
+
+let currentLang = 'ko'
+
+function setLang(lang) {
+  currentLang = lang
+  const d = I18N[lang]
+
+  // KO/EN 버튼 스타일
+  document.getElementById('btn-ko').style.background = lang==='ko' ? 'rgba(29,158,117,0.8)' : 'transparent'
+  document.getElementById('btn-ko').style.color = lang==='ko' ? '#fff' : 'var(--gray-light)'
+  document.getElementById('btn-en').style.background = lang==='en' ? 'rgba(29,158,117,0.8)' : 'transparent'
+  document.getElementById('btn-en').style.color = lang==='en' ? '#fff' : 'var(--gray-light)'
+
+  // data-i18n 속성으로 텍스트 교체
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n')
+    if (d[key]) el.innerHTML = d[key]
+  })
+
+  // html lang 속성
+  document.documentElement.lang = lang
+}
+
+// 브라우저 언어 감지
+const browserLang = navigator.language.startsWith('ko') ? 'ko' : 'en'
+if (browserLang === 'en') setLang('en')
+</script>
 
 </body>
 </html>
