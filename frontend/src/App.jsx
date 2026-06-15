@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { usePestData } from './lib/usePestData'
+import { useAuth } from './lib/useAuth'
+import { supabase } from './lib/supabaseClient'
 import { translate, translatePestLabel } from './lib/i18n'
 import SummaryCards from './components/SummaryCards'
 import WeeklyChart from './components/WeeklyChart'
@@ -9,6 +11,7 @@ import DeviceStatus from './components/DeviceStatus'
 import RecentDetections from './components/RecentDetections'
 import DeviceSettings from './components/DeviceSettings'
 import BabyCam from './components/BabyCam'
+import Login from './components/Login'
 
 const TAB_KEYS = ['all', 'roach', 'mosquito', 'fly', 'baby']
 
@@ -16,6 +19,7 @@ export default function App() {
   const [tab, setTab] = useState('all')
   const [lang, setLang] = useState('ko')
   const [showSettings, setShowSettings] = useState(false)
+  const { session, loading: authLoading, signOut } = useAuth()
   const {
     loading,
     usingDummy,
@@ -32,6 +36,22 @@ export default function App() {
   } = usePestData()
 
   const t = (key, ...args) => translate(lang, key, ...args)
+
+  // Supabase가 연결된 경우, 로그인한 사용자만 대시보드를 볼 수 있도록 게이트합니다.
+  // .env가 설정되지 않은 로컬/더미 모드(supabase === null)에서는 게이트 없이
+  // 더미 데이터로 바로 화면을 확인할 수 있습니다.
+  if (supabase) {
+    if (authLoading) {
+      return (
+        <div style={{ maxWidth: 380, margin: '0 auto', textAlign: 'center', padding: '40px 0' }}>
+          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>{t('authChecking')}</p>
+        </div>
+      )
+    }
+    if (!session) {
+      return <Login lang={lang} />
+    }
+  }
 
   // 기기 상태(배터리/약품/오류)와 "신규 감지 발생"은 서로 다른 의미이므로 분리해서 표시합니다.
   const deviceNormal = deviceStatus.status === 'normal'
@@ -129,6 +149,28 @@ export default function App() {
               >
                 <i className="ti ti-settings" aria-hidden="true" style={{ fontSize: 14 }} />
               </button>
+              {supabase && session && (
+                <button
+                  onClick={() => signOut()}
+                  aria-label={t('logout')}
+                  title={t('logout')}
+                  style={{
+                    width: 26,
+                    height: 26,
+                    borderRadius: 'var(--border-radius-md)',
+                    border: '0.5px solid var(--color-border-secondary)',
+                    background: 'var(--color-background-primary)',
+                    color: 'var(--color-text-secondary)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <i className="ti ti-logout" aria-hidden="true" style={{ fontSize: 14 }} />
+                </button>
+              )}
             </div>
             <div style={{ display: 'flex', gap: 4 }}>
               {['ko', 'en'].map((l) => (

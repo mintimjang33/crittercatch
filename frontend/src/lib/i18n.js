@@ -73,6 +73,19 @@ const dict = {
     roomTemp: '실내 온도',
     babyCamHelp:
       '라즈베리파이에서 mjpg-streamer 등으로 영상을 스트리밍하고, 마이크 입력을 받는 WebSocket 오디오 서버를 함께 실행하면 이 화면에서 실시간 영상 확인과 양방향 대화가 가능합니다.',
+
+    // 로그인
+    loginTitle: '로그인이 필요합니다',
+    loginSubtitle: '본인 계정으로만 대시보드를 볼 수 있어요.',
+    emailLabel: '이메일',
+    passwordLabel: '비밀번호',
+    signInButton: '로그인',
+    signUpButton: '계정 만들기',
+    switchToSignup: '처음이신가요? 계정 만들기',
+    switchToSignin: '계정이 있으신가요? 로그인',
+    signupCheckEmail: '가입 확인 메일을 보냈어요. 메일함을 확인해주세요.',
+    authChecking: '로그인 확인 중...',
+    logout: '로그아웃',
   },
   en: {
     brand: 'CritterCatch · Smart Pest Control',
@@ -139,6 +152,19 @@ const dict = {
     roomTemp: 'Room Temp',
     babyCamHelp:
       'Run mjpg-streamer (or similar) on the Raspberry Pi for video, plus a WebSocket audio server for the microphone input, to enable live video and two-way talk here.',
+
+    // Login
+    loginTitle: 'Login Required',
+    loginSubtitle: 'Only your account can view this dashboard.',
+    emailLabel: 'Email',
+    passwordLabel: 'Password',
+    signInButton: 'Sign In',
+    signUpButton: 'Create Account',
+    switchToSignup: "Don't have an account? Sign up",
+    switchToSignin: 'Already have an account? Sign in',
+    signupCheckEmail: 'We sent a confirmation email. Please check your inbox.',
+    authChecking: 'Checking login...',
+    logout: 'Log out',
   },
 }
 
