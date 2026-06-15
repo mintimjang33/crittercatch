@@ -72,9 +72,12 @@ export default function App() {
           }}
         >
           <div>
-            <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', margin: 0 }}>
+            <a
+              href="/crittercatch/landing.html"
+              style={{ fontSize: 13, color: 'var(--color-text-secondary)', margin: 0, textDecoration: 'none', display: 'block' }}
+            >
               {t('brand')}
-            </p>
+            </a>
             <p
               style={{
                 fontSize: 20,
@@ -213,6 +216,37 @@ export default function App() {
         )}
 
         <DeviceStatus status={deviceStatus} lang={lang} />
+
+        {/* 하단 링크바 */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 16,
+            marginTop: 12,
+            paddingTop: 12,
+            borderTop: '0.5px solid var(--color-border-tertiary)',
+          }}
+        >
+          <a
+            href="/crittercatch/landing.html"
+            style={{ fontSize: 11, color: 'var(--color-text-tertiary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+          >
+            🏠 {lang === 'ko' ? '홈' : 'Home'}
+          </a>
+          <a
+            href="/crittercatch/blog/"
+            style={{ fontSize: 11, color: 'var(--color-text-tertiary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+          >
+            📝 {lang === 'ko' ? '블로그' : 'Blog'}
+          </a>
+          <a
+            href="/crittercatch/admin/"
+            style={{ fontSize: 11, color: 'var(--color-text-tertiary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+          >
+            ⚙️ {lang === 'ko' ? '관리자' : 'Admin'}
+          </a>
+        </div>
       </div>
     </div>
   )
