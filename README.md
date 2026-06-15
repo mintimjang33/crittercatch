@@ -1,0 +1,137 @@
+# CritterCatch 대시보드
+
+AI 해충 감지기(바퀴벌레/모기/파리)의 감지 이력을 보여주는 React 대시보드입니다.
+Supabase를 데이터베이스로 사용하며, 라즈베리파이 기기가 Supabase로 감지 이벤트를
+전송하면 대시보드에 실시간으로 반영됩니다.
+
+```
+crittercatch/
+├─ frontend/        React + Vite 대시보드 (GitHub Pages로 배포)
+├─ supabase/        DB 스키마 (schema.sql)
+└─ simulator/        라즈베리파이 감지 이벤트 시뮬레이터 (테스트용)
+```
+
+Supabase 연결 전에는 더미 데이터로 화면이 동작하므로, 일단 프론트엔드만
+배포해서 디자인을 확인할 수도 있습니다.
+
+---
+
+## 1. Supabase 설정
+
+1. [supabase.com](https://supabase.com) 에서 새 프로젝트 생성 (구글 계정으로 가입 가능)
+2. 프로젝트 생성 후 좌측 메뉴 **SQL Editor** 클릭
+3. `supabase/schema.sql` 파일 내용을 전체 복사해서 붙여넣고 실행 (Run)
+   - `detections` (감지 이벤트), `device_status` (기기 상태) 테이블이 생성됩니다
+   - 샘플 데이터도 함께 들어갑니다
+4. 좌측 메뉴 **Project Settings > API** 에서 다음 두 값을 복사해둡니다
+   - `Project URL`
+   - `anon public` 키
+
+---
+
+## 2. 프론트엔드 로컬 실행
+
+```bash
+cd frontend
+npm install
+cp .env.example .env   # .env 파일을 만들고 아래 값 채우기
+```
+
+`.env` 파일:
+```
+VITE_SUPABASE_URL=https://xxxxxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJxxxxxxxx...
+```
+
+```bash
+npm run dev
+```
+
+브라우저에서 `http://localhost:5173` 접속. `.env`를 채우지 않으면 더미 데이터로 동작합니다.
+
+---
+
+## 3. GitHub에 올리기
+
+```bash
+cd crittercatch
+git init
+git add .
+git commit -m "CritterCatch dashboard initial commit"
+git branch -M main
+git remote add origin https://github.com/<내깃허브계정>/crittercatch.git
+git push -u origin main
+```
+
+---
+
+## 4. GitHub Pages로 배포 (자동)
+
+이 레포에는 `.github/workflows/deploy.yml`이 포함되어 있어, `main` 브랜치에 push하면
+자동으로 빌드 후 GitHub Pages에 배포됩니다.
+
+**최초 설정 (한 번만)**
+
+1. GitHub 레포 → **Settings > Pages** → Source를 **GitHub Actions**로 변경
+2. GitHub 레포 → **Settings > Secrets and variables > Actions** → New repository secret
+   - `VITE_SUPABASE_URL` = Supabase Project URL
+   - `VITE_SUPABASE_ANON_KEY` = Supabase anon key
+3. `frontend/vite.config.js` 의 `base` 값은 이미 `/crittercatch/`로 설정되어 있습니다.
+   (만약 레포 이름을 다르게 만들었다면 그 이름으로 수정하세요)
+   ```js
+   base: '/crittercatch/',
+   ```
+4. 위 변경사항을 commit & push하면 Actions 탭에서 빌드/배포가 진행됩니다.
+5. 배포 완료 후 `https://<내깃허브계정>.github.io/crittercatch/` 에서 확인 가능합니다.
+
+---
+
+## 5. 라즈베리파이(기기) 연동
+
+기기가 해충을 감지하면 Supabase `detections` 테이블에 행을 추가(insert)하면
+대시보드에 실시간으로 반영됩니다 (Realtime 구독 적용됨).
+
+`simulator/simulate_detection.py`는 이 동작을 흉내내는 테스트 스크립트입니다.
+
+```bash
+cd simulator
+pip install supabase
+export SUPABASE_URL=https://xxxxxxxx.supabase.co
+export SUPABASE_ANON_KEY=eyJxxxxxxxx...
+export DEVICE_ID=cockroach-kitchen-01
+export PEST_TYPE=roach
+python simulate_detection.py
+```
+
+실제 라즈베리파이 펌웨어에서는 AI가 해충을 식별한 직후, 이 스크립트의
+`insert_detection()` 부분과 동일한 코드를 호출하면 됩니다.
+
+### 데이터 구조
+
+**detections** (감지 이벤트, 1건 = 1회 감지)
+| 컬럼 | 설명 |
+|---|---|
+| `device_id` | 기기 식별자, 예: `cockroach-kitchen-01` |
+| `pest_type` | `roach` / `mosquito` / `fly` |
+| `location` | `주방` / `욕실` / `거실` / `침실` 등 |
+| `count` | 감지된 마릿수 (기본 1) |
+| `created_at` | 감지 시각 (자동 기록) |
+
+**device_status** (기기 상태, 기기별 1행)
+| 컬럼 | 설명 |
+|---|---|
+| `device_id` | 기기 식별자 (기본키) |
+| `chemical_level` | 약품/카트리지 잔량 % |
+| `battery_level` | 배터리 잔량 % |
+| `status` | `normal` / `warning` / `error` |
+
+---
+
+## 화면 구성
+
+- **전체 탭**: 바퀴벌레/모기/파리 요약 카드, 월간 감지 추이, 출몰 위치 비율
+- **개별 탭** (바퀴벌레/모기/파리): 박멸률, 주간 감지 수, 주요 출몰 위치
+- **하단**: 약품 잔량, 배터리, 기기 상태
+
+데이터가 비어있으면 더미 데이터를 보여주고, Supabase에 실제 감지 데이터가
+쌓이면 자동으로 실제 데이터 기반 화면으로 전환됩니다.
