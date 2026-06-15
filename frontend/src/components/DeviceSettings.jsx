@@ -49,6 +49,15 @@ const MY_SERVICES = [
     descEn: 'Baby sleep monitoring + cry detection',
     active: false,
   },
+  {
+    id: 'twoway',
+    icon: '🔊',
+    nameKo: '양방향 오디오',
+    nameEn: 'Two-way Audio',
+    descKo: '앱에서 아기에게 말하기 + 자장가 재생',
+    descEn: 'Talk to baby from app + lullaby playback',
+    active: false,
+  },
 ]
 
 export default function DeviceSettings({ devices, updateDevice, addDevice, lang }) {
