@@ -132,6 +132,7 @@ textarea{resize:vertical;min-height:200px;line-height:1.6;}
         <li><a href="#" onclick="showPage('write',this)"><i class="ti ti-pencil" aria-hidden="true"></i> 글쓰기</a></li>
         <div class="sb-section">설정</div>
         <li><a href="#" onclick="showPage('ads',this)"><i class="ti ti-ad" aria-hidden="true"></i> 광고 관리</a></li>
+        <li><a href="#" onclick="showPage('reviews',this)"><i class="ti ti-star" aria-hidden="true"></i> 후기 관리</a></li>
         <li><a href="/crittercatch/blog/" target="_blank"><i class="ti ti-external-link" aria-hidden="true"></i> 블로그 보기</a></li>
         <li><a href="/crittercatch/" target="_blank"><i class="ti ti-device-mobile" aria-hidden="true"></i> 대시보드</a></li>
         <div class="sb-section"></div>
@@ -220,6 +221,15 @@ textarea{resize:vertical;min-height:200px;line-height:1.6;}
         </div>
       </div>
 
+      <!-- 후기 관리 -->
+      <div class="page" id="page-reviews">
+        <div class="page-title">후기 관리</div>
+        <div class="page-sub">사용자 후기 승인 및 관리</div>
+        <div class="card" id="reviews-list">
+          <div style="text-align:center;padding:20px;color:var(--gray);">불러오는 중...</div>
+        </div>
+      </div>
+
       <!-- 광고 관리 -->
       <div class="page" id="page-ads">
         <div class="page-title">광고 관리</div>
@@ -266,6 +276,43 @@ function login() {
     document.getElementById('login-screen').style.display = 'none'
     document.getElementById('app-screen').style.display = 'block'
     loadAll()
+async function loadReviewsAdmin() {
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/reviews?select=*&order=created_at.desc`, {
+      headers:{apikey:SERVICE_KEY,Authorization:`Bearer ${SERVICE_KEY}`}
+    })
+    const reviews = await r.json()
+    const el = document.getElementById('reviews-list')
+    if(!reviews.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--gray);">후기가 없습니다</div>';return}
+    el.innerHTML = reviews.map(r=>`
+      <div class="post-item" style="flex-wrap:wrap;gap:8px;">
+        <div class="post-item-info">
+          <div class="post-item-title">${'⭐'.repeat(r.rating)} ${r.name} · ${r.product||''}</div>
+          <div style="font-size:12px;color:var(--gray);margin:4px 0;">${r.content.slice(0,80)}...</div>
+          <div class="post-item-meta">
+            <span>${new Date(r.created_at).toLocaleDateString('ko-KR')}</span>
+            <span class="${r.approved?'badge-pub':'badge-draft'}">${r.approved?'승인됨':'대기중'}</span>
+          </div>
+        </div>
+        <div class="post-item-actions">
+          ${!r.approved?`<button class="btn btn-primary btn-sm" onclick="approveReview(${r.id})">승인</button>`:''}
+          <button class="btn btn-danger btn-sm" onclick="deleteReview(${r.id})"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+    `).join('')
+  }catch(e){console.error(e)}
+}
+async function approveReview(id){
+  await fetch(`${SB_URL}/rest/v1/reviews?id=eq.${id}`,{method:'PATCH',headers:{apikey:SERVICE_KEY,Authorization:`Bearer ${SERVICE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({approved:true})})
+  toast('승인됐습니다!'); loadReviewsAdmin()
+}
+async function deleteReview(id){
+  if(!confirm('삭제하시겠습니까?'))return
+  await fetch(`${SB_URL}/rest/v1/reviews?id=eq.${id}`,{method:'DELETE',headers:{apikey:SERVICE_KEY,Authorization:`Bearer ${SERVICE_KEY}`}})
+  toast('삭제됐습니다'); loadReviewsAdmin()
+}
+// 후기 탭 클릭 시 로드
+document.querySelector('[onclick*="reviews"]')?.addEventListener('click', loadReviewsAdmin)
   } else {
     document.getElementById('login-err').textContent = '비밀번호가 올바르지 않습니다'
   }
@@ -292,7 +339,44 @@ function toast(msg, ok=true) {
   setTimeout(() => t.classList.remove('show'), 2500)
 }
 
-async function loadAll() {
+async function loadAll()
+async function loadReviewsAdmin() {
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/reviews?select=*&order=created_at.desc`, {
+      headers:{apikey:SERVICE_KEY,Authorization:`Bearer ${SERVICE_KEY}`}
+    })
+    const reviews = await r.json()
+    const el = document.getElementById('reviews-list')
+    if(!reviews.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--gray);">후기가 없습니다</div>';return}
+    el.innerHTML = reviews.map(r=>`
+      <div class="post-item" style="flex-wrap:wrap;gap:8px;">
+        <div class="post-item-info">
+          <div class="post-item-title">${'⭐'.repeat(r.rating)} ${r.name} · ${r.product||''}</div>
+          <div style="font-size:12px;color:var(--gray);margin:4px 0;">${r.content.slice(0,80)}...</div>
+          <div class="post-item-meta">
+            <span>${new Date(r.created_at).toLocaleDateString('ko-KR')}</span>
+            <span class="${r.approved?'badge-pub':'badge-draft'}">${r.approved?'승인됨':'대기중'}</span>
+          </div>
+        </div>
+        <div class="post-item-actions">
+          ${!r.approved?`<button class="btn btn-primary btn-sm" onclick="approveReview(${r.id})">승인</button>`:''}
+          <button class="btn btn-danger btn-sm" onclick="deleteReview(${r.id})"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+    `).join('')
+  }catch(e){console.error(e)}
+}
+async function approveReview(id){
+  await fetch(`${SB_URL}/rest/v1/reviews?id=eq.${id}`,{method:'PATCH',headers:{apikey:SERVICE_KEY,Authorization:`Bearer ${SERVICE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({approved:true})})
+  toast('승인됐습니다!'); loadReviewsAdmin()
+}
+async function deleteReview(id){
+  if(!confirm('삭제하시겠습니까?'))return
+  await fetch(`${SB_URL}/rest/v1/reviews?id=eq.${id}`,{method:'DELETE',headers:{apikey:SERVICE_KEY,Authorization:`Bearer ${SERVICE_KEY}`}})
+  toast('삭제됐습니다'); loadReviewsAdmin()
+}
+// 후기 탭 클릭 시 로드
+document.querySelector('[onclick*="reviews"]')?.addEventListener('click', loadReviewsAdmin) {
   await loadPosts()
   await loadAds()
   renderDashboard()
