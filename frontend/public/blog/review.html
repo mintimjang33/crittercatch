@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CritterCatch — 후기 작성</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{--mint:#1D9E75;--mint-mid:#5DCAA5;--fd:'Space Grotesk',sans-serif;--fb:'Noto Sans KR',sans-serif;--bg:#F4F8F5;--bg2:#fff;--text:#1a2e22;--text2:#4A5A50;--border:#D8EAE0;}
+@media(prefers-color-scheme:dark){:root{--bg:#0D1A14;--bg2:#142218;--text:#e8f0eb;--text2:#8FA898;--border:rgba(93,202,165,0.15);}}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;}
+nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100;}
+.nav-in{max-width:640px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--mint);text-decoration:none;display:flex;align-items:center;gap:6px;}
+.nav-back{font-size:13px;color:var(--text2);text-decoration:none;display:flex;align-items:center;gap:4px;}
+.nav-back:hover{color:var(--mint);}
+
+.wrap{max-width:640px;margin:0 auto;padding:40px 24px;}
+
+/* 헤더 */
+.page-header{margin-bottom:32px;}
+.page-header h1{font-family:var(--fd);font-size:26px;font-weight:700;margin-bottom:6px;}
+.page-header p{font-size:14px;color:var(--text2);}
+
+/* 카드 */
+.card{background:var(--bg2);border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:16px;}
+.card-title{font-family:var(--fd);font-size:14px;font-weight:600;margin-bottom:16px;color:var(--text);display:flex;align-items:center;gap:8px;}
+.card-title i{font-size:16px;color:var(--mint);}
+
+/* 별점 */
+.stars{display:flex;gap:8px;margin-bottom:4px;}
+.star-btn{font-size:32px;cursor:pointer;transition:transform .15s;background:none;border:none;padding:0;line-height:1;}
+.star-btn:hover{transform:scale(1.15);}
+.star-label{font-size:12px;color:var(--text2);margin-top:4px;}
+
+/* 카테고리 */
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.cat-btn{padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;transition:all .2s;}
+.cat-btn.active{border-color:var(--mint);background:rgba(29,158,117,0.06);}
+.cat-icon{font-size:22px;margin-bottom:4px;}
+.cat-name{font-family:var(--fd);font-size:13px;font-weight:500;color:var(--text);}
+.cat-sub{font-size:11px;color:var(--text2);}
+
+/* 폼 요소 */
+label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500;}
+input[type=text],textarea,select{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:var(--fb);outline:none;transition:border-color .2s;}
+input:focus,textarea:focus,select:focus{border-color:var(--mint);}
+textarea{resize:vertical;min-height:120px;line-height:1.7;}
+.form-group{margin-bottom:14px;}
+.char-count{font-size:11px;color:var(--text2);text-align:right;margin-top:4px;}
+
+/* 이미지 업로드 */
+.img-upload{border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border-color .2s;}
+.img-upload:hover{border-color:var(--mint);}
+.img-upload i{font-size:28px;color:var(--text2);display:block;margin-bottom:8px;}
+.img-upload p{font-size:13px;color:var(--text2);}
+.img-upload input{display:none;}
+.img-preview{width:100%;border-radius:8px;margin-top:10px;object-fit:cover;max-height:200px;}
+
+/* 제품 태그 */
+.product-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.product-tag{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;font-family:var(--fd);}
+.product-tag.active{background:var(--mint);color:#fff;border-color:var(--mint);}
+
+/* 버튼 */
+.btn-submit{width:100%;padding:14px;border-radius:10px;background:var(--mint);color:#fff;font-size:15px;font-family:var(--fd);font-weight:600;border:none;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-submit:hover{background:var(--mint-mid);}
+.btn-submit:disabled{background:var(--border);cursor:default;}
+
+/* 성공 화면 */
+.success{text-align:center;padding:48px 24px;display:none;}
+.success-icon{font-size:56px;margin-bottom:16px;}
+.success h2{font-family:var(--fd);font-size:22px;font-weight:700;margin-bottom:8px;}
+.success p{font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.7;}
+.btn-back{display:inline-flex;align-items:center;gap:6px;padding:11px 24px;border-radius:50px;background:var(--mint);color:#fff;text-decoration:none;font-family:var(--fd);font-size:14px;font-weight:500;}
+
+/* 안내 */
+.notice{font-size:12px;color:var(--text2);background:rgba(29,158,117,0.06);border-radius:8px;padding:10px 14px;line-height:1.6;margin-top:12px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a href="/crittercatch/landing.html" class="nav-logo"><i class="ti ti-bug" aria-hidden="true"></i> CritterCatch</a>
+    <a href="/crittercatch/blog/" class="nav-back"><i class="ti ti-arrow-left" aria-hidden="true"></i> 블로그</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 작성 폼 -->
+  <div id="form-section">
+    <div class="page-header">
+      <h1>⭐ 후기 작성</h1>
+      <p>실제 사용 경험을 공유해주세요. 검토 후 블로그에 게시됩니다.</p>
+    </div>
+
+    <!-- 별점 -->
+    <div class="card">
+      <div class="card-title"><i class="ti ti-star" aria-hidden="true"></i> 만족도</div>
+      <div class="stars" id="stars">
+        <button class="star-btn" onclick="setRating(1)" id="s1">⭐</button>
+        <button class="star-btn" onclick="setRating(2)" id="s2">⭐</button>
+        <button class="star-btn" onclick="setRating(3)" id="s3">⭐</button>
+        <button class="star-btn" onclick="setRating(4)" id="s4">⭐</button>
+        <button class="star-btn" onclick="setRating(5)" id="s5">⭐</button>
+      </div>
+      <div class="star-label" id="star-label">별점을 선택해주세요</div>
+    </div>
+
+    <!-- 카테고리 -->
+    <div class="card">
+      <div class="card-title"><i class="ti ti-category" aria-hidden="true"></i> 사용 환경</div>
+      <div class="cat-grid">
+        <button class="cat-btn" onclick="setCat('home',this)">
+          <div class="cat-icon">🏠</div>
+          <div class="cat-name">가정용</div>
+          <div class="cat-sub">일반 가정</div>
+        </button>
+        <button class="cat-btn" onclick="setCat('biz',this)">
+          <div class="cat-icon">🍽️</div>
+          <div class="cat-name">업소용</div>
+          <div class="cat-sub">식당·편의점·사무실</div>
+        </button>
+        <button class="cat-btn" onclick="setCat('camp',this)">
+          <div class="cat-icon">🏕️</div>
+          <div class="cat-name">캠핑용</div>
+          <div class="cat-sub">텐트·차박·야외</div>
+        </button>
+        <button class="cat-btn" onclick="setCat('baby',this)">
+          <div class="cat-icon">🍼</div>
+          <div class="cat-name">아기용</div>
+          <div class="cat-sub">모빌형·베이비캠</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- 제품 선택 -->
+    <div class="card">
+      <div class="card-title"><i class="ti ti-device-mobile" aria-hidden="true"></i> 사용 제품</div>
+      <div class="product-tags">
+        <button class="product-tag" onclick="setProd('바퀴벌레 감지기',this)">🪳 바퀴벌레 감지기</button>
+        <button class="product-tag" onclick="setProd('모기 감지기 (창문형)',this)">🦟 모기 감지기</button>
+        <button class="product-tag" onclick="setProd('아기 모빌형',this)">🍼 아기 모빌형</button>
+        <button class="product-tag" onclick="setProd('캠핑 올인원',this)">🏕️ 캠핑 올인원</button>
+        <button class="product-tag" onclick="setProd('업소용',this)">🍽️ 업소용</button>
+      </div>
+    </div>
+
+    <!-- 후기 내용 -->
+    <div class="card">
+      <div class="card-title"><i class="ti ti-message" aria-hidden="true"></i> 후기 내용</div>
+      <div class="form-group">
+        <label>이름 (닉네임)</label>
+        <input type="text" id="f-name" placeholder="홍길동 or 주방맘" maxlength="20"/>
+      </div>
+      <div class="form-group">
+        <label>후기</label>
+        <textarea id="f-content" placeholder="어떤 점이 좋았나요? 설치는 어땠나요? 효과는요?&#10;솔직한 경험을 자유롭게 써주세요." maxlength="500" oninput="countChars()"></textarea>
+        <div class="char-count"><span id="char-num">0</span>/500</div>
+      </div>
+
+      <!-- 사진 업로드 -->
+      <div class="form-group">
+        <label>사진 첨부 (선택)</label>
+        <div class="img-upload" onclick="document.getElementById('img-input').click()">
+          <i class="ti ti-photo-plus" aria-hidden="true"></i>
+          <p>클릭해서 사진 추가</p>
+          <p style="font-size:11px;margin-top:4px;">JPG, PNG, WEBP · 최대 5MB</p>
+          <input type="file" id="img-input" accept="image/*" onchange="previewImg(this)"/>
+        </div>
+        <img id="img-preview" class="img-preview" style="display:none;"/>
+      </div>
+    </div>
+
+    <div class="notice">
+      📋 작성하신 후기는 검토 후 블로그와 랜딩페이지에 게시됩니다. 허위·광고성 내용은 게시되지 않을 수 있어요.
+    </div>
+
+    <div style="margin-top:16px;">
+      <button class="btn-submit" id="btn-submit" onclick="submitReview()">
+        <i class="ti ti-send" aria-hidden="true"></i> 후기 제출하기
+      </button>
+    </div>
+  </div>
+
+  <!-- 성공 화면 -->
+  <div class="success" id="success-section">
+    <div class="success-icon">🎉</div>
+    <h2>후기가 접수됐습니다!</h2>
+    <p>소중한 후기 감사합니다.<br/>검토 후 블로그와 랜딩페이지에 게시될 예정이에요.</p>
+    <a href="/crittercatch/blog/" class="btn-back"><i class="ti ti-arrow-left" aria-hidden="true"></i> 블로그로 돌아가기</a>
+  </div>
+
+</div>
+
+<script>
+const SB_URL = 'YOUR_SUPABASE_URL'
+const SB_KEY = 'YOUR_SUPABASE_ANON_KEY'
+
+const STAR_LABELS = ['', '별로예요', '그저 그래요', '괜찮아요', '좋아요', '최고예요!']
+let rating = 0, category = '', product = ''
+
+function setRating(n) {
+  rating = n
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById(`s${i}`).textContent = i <= n ? '⭐' : '☆'
+    document.getElementById(`s${i}`).style.filter = i <= n ? 'none' : 'grayscale(1)'
+  }
+  document.getElementById('star-label').textContent = STAR_LABELS[n]
+  document.getElementById('star-label').style.color = n >= 4 ? '#3B6D11' : n >= 3 ? '#854F0B' : '#A32D2D'
+}
+
+function setCat(cat, btn) {
+  category = cat
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+}
+
+function setProd(prod, btn) {
+  product = prod
+  document.querySelectorAll('.product-tag').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+}
+
+function countChars() {
+  const n = document.getElementById('f-content').value.length
+  document.getElementById('char-num').textContent = n
+}
+
+function previewImg(input) {
+  const file = input.files[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = e => {
+    const preview = document.getElementById('img-preview')
+    preview.src = e.target.result
+    preview.style.display = 'block'
+  }
+  reader.readAsDataURL(file)
+}
+
+async function submitReview() {
+  const name = document.getElementById('f-name').value.trim()
+  const content = document.getElementById('f-content').value.trim()
+
+  if (!rating) { alert('별점을 선택해주세요!'); return }
+  if (!category) { alert('사용 환경을 선택해주세요!'); return }
+  if (!name) { alert('이름을 입력해주세요!'); return }
+  if (content.length < 20) { alert('후기를 20자 이상 작성해주세요!'); return }
+
+  const btn = document.getElementById('btn-submit')
+  btn.disabled = true
+  btn.innerHTML = '<i class="ti ti-loader"></i> 제출 중...'
+
+  try {
+    await fetch(`${SB_URL}/rest/v1/reviews`, {
+      method: 'POST',
+      headers: {
+        apikey: SB_KEY,
+        Authorization: `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({ name, rating, category, content, product: product || null }),
+    })
+    document.getElementById('form-section').style.display = 'none'
+    document.getElementById('success-section').style.display = 'block'
+  } catch(e) {
+    // 오프라인 데모용
+    document.getElementById('form-section').style.display = 'none'
+    document.getElementById('success-section').style.display = 'block'
+  }
+}
+
+// 별 초기화
+setRating(0)
+for(let i=1;i<=5;i++){
+  document.getElementById(`s${i}`).textContent='☆'
+  document.getElementById(`s${i}`).style.filter='grayscale(1)'
+}
+</script>
+</body>
+</html>
