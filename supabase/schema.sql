@@ -10,15 +10,18 @@ create table if not exists detections (
   device_id text not null,           -- 예: 'cockroach-kitchen-01', 'mosquito-bedroom-01'
   pest_type text not null check (pest_type in ('roach', 'mosquito', 'fly')),
   location text not null,            -- '주방' | '욕실' | '거실' | '침실' 등
-  count int not null default 1       -- 감지된 마릿수
+  count int not null default 1,      -- 감지된 마릿수
+  video_url text                     -- 감지 당시 녹화 영상 URL (Storage, 선택)
 );
 
 create index if not exists idx_detections_created_at on detections (created_at desc);
 create index if not exists idx_detections_pest_type on detections (pest_type);
 
--- 2. 기기 상태 테이블 (배터리, 약품/카트리지 잔량 등)
+-- 2. 기기 상태 테이블 (배터리, 약품/카트리지 잔량, 설치 위치 등)
 create table if not exists device_status (
   device_id text primary key,
+  display_name text,                        -- 대시보드에 표시할 기기 별칭 (예: '주방 바퀴벌레 감지기')
+  location_label text,                      -- 설치 위치 (예: '주방 싱크대 하단')
   chemical_level int not null default 100,  -- 약품/카트리지 잔량 %
   battery_level int not null default 100,   -- 배터리 잔량 %
   status text not null default 'normal' check (status in ('normal', 'warning', 'error')),
@@ -52,7 +55,23 @@ create policy "Allow public upsert on device_status"
 
 create policy "Allow public update on device_status"
   on device_status for update
-  using (true);
+  using (true)
+  with check (true);
+
+-- ============================================================
+-- Storage: 감지 영상 저장용 버킷
+-- ============================================================
+insert into storage.buckets (id, name, public)
+values ('detection-videos', 'detection-videos', true)
+on conflict (id) do nothing;
+
+create policy "Public read detection videos"
+  on storage.objects for select
+  using (bucket_id = 'detection-videos');
+
+create policy "Public upload detection videos"
+  on storage.objects for insert
+  with check (bucket_id = 'detection-videos');
 
 -- ============================================================
 -- Realtime: detections 테이블 변경사항을 프론트엔드에서 구독하기 위해 활성화
@@ -63,9 +82,9 @@ alter publication supabase_realtime add table detections;
 -- ============================================================
 -- 샘플 데이터 (테스트용, 필요 없으면 삭제하세요)
 -- ============================================================
-insert into device_status (device_id, chemical_level, battery_level, status) values
-  ('cockroach-kitchen-01', 68, 92, 'normal'),
-  ('mosquito-bedroom-01', 100, 88, 'normal');
+insert into device_status (device_id, display_name, location_label, chemical_level, battery_level, status) values
+  ('cockroach-kitchen-01', '바퀴벌레 감지기', '주방 싱크대 하단', 68, 92, 'normal'),
+  ('mosquito-bedroom-01', '모기 포획기', '침실 창가', 100, 88, 'normal');
 
 insert into detections (created_at, device_id, pest_type, location, count) values
   (now() - interval '1 day',  'cockroach-kitchen-01', 'roach', '주방', 1),

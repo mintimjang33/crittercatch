@@ -69,3 +69,56 @@ export const dummyDeviceStatus = {
   batteryLevel: 92,
   status: 'normal',
 }
+
+// 최근 감지 이력 (영상 보기 화면용). 실제로는 detections 테이블의
+// video_url 컬럼에 Supabase Storage 영상 URL이 들어갑니다.
+export const dummyRecentDetections = [
+  {
+    id: 1,
+    created_at: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+    device_id: 'cockroach-kitchen-01',
+    pest_type: 'roach',
+    location: '주방',
+    count: 1,
+    video_url: null,
+  },
+  {
+    id: 2,
+    created_at: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+    device_id: 'mosquito-bedroom-01',
+    pest_type: 'mosquito',
+    location: '침실',
+    count: 2,
+    video_url: null,
+  },
+  {
+    id: 3,
+    created_at: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
+    device_id: 'cockroach-kitchen-01',
+    pest_type: 'roach',
+    location: '욕실',
+    count: 1,
+    video_url: null,
+  },
+]
+
+// 기기 목록 (설정 화면용). display_name/location_label은
+// 대시보드에서 직접 수정할 수 있습니다.
+export const dummyDevices = [
+  {
+    device_id: 'cockroach-kitchen-01',
+    display_name: '바퀴벌레 감지기',
+    location_label: '주방 싱크대 하단',
+    chemical_level: 68,
+    battery_level: 92,
+    status: 'normal',
+  },
+  {
+    device_id: 'mosquito-bedroom-01',
+    display_name: '모기 포획기',
+    location_label: '침실 창가',
+    chemical_level: 100,
+    battery_level: 88,
+    status: 'normal',
+  },
+]

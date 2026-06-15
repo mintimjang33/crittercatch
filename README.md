@@ -22,10 +22,14 @@ Supabase 연결 전에는 더미 데이터로 화면이 동작하므로, 일단 
 2. 프로젝트 생성 후 좌측 메뉴 **SQL Editor** 클릭
 3. `supabase/schema.sql` 파일 내용을 전체 복사해서 붙여넣고 실행 (Run)
    - `detections` (감지 이벤트), `device_status` (기기 상태) 테이블이 생성됩니다
+   - `detection-videos` Storage 버킷도 함께 생성됩니다
    - 샘플 데이터도 함께 들어갑니다
 4. 좌측 메뉴 **Project Settings > API** 에서 다음 두 값을 복사해둡니다
    - `Project URL`
-   - `anon public` 키
+   - `anon public` 키 (또는 새 API 키 체계의 `Publishable key`)
+
+**이미 schema.sql을 한 번 실행한 프로젝트라면**, 영상/기기설정 기능을 추가하기 위해
+`supabase/migration_v2.sql`을 SQL Editor에서 추가로 실행하세요. 기존 데이터는 유지됩니다.
 
 ---
 
@@ -116,22 +120,61 @@ python simulate_detection.py
 | `location` | `주방` / `욕실` / `거실` / `침실` 등 |
 | `count` | 감지된 마릿수 (기본 1) |
 | `created_at` | 감지 시각 (자동 기록) |
+| `video_url` | 감지 영상 URL (Supabase Storage, 선택) |
 
 **device_status** (기기 상태, 기기별 1행)
 | 컬럼 | 설명 |
 |---|---|
 | `device_id` | 기기 식별자 (기본키) |
+| `display_name` | 대시보드에 표시할 기기 이름 (설정 화면에서 수정 가능) |
+| `location_label` | 설치 위치 설명 (설정 화면에서 수정 가능) |
 | `chemical_level` | 약품/카트리지 잔량 % |
 | `battery_level` | 배터리 잔량 % |
 | `status` | `normal` / `warning` / `error` |
 
 ---
 
+## 6. 감지 영상 (Supabase Storage)
+
+기기가 모기/바퀴벌레를 감지하고 짧은 영상을 녹화했다면, `detection-videos` Storage
+버킷에 업로드한 뒤 그 공개 URL을 `detections.video_url`에 함께 기록하면 대시보드의
+"최근 감지 영상" 목록에서 바로 재생할 수 있습니다.
+
+`simulator/simulate_detection.py`에 예시가 포함되어 있습니다:
+
+```bash
+export VIDEO_FILE=/path/to/clip.mp4
+python simulate_detection.py
+```
+
+라즈베리파이 펌웨어에서는 `upload_video()` 함수와 동일한 방식으로:
+1. 감지~포획/분사 구간을 짧은 mp4로 녹화
+2. `client.storage.from_("detection-videos").upload(path, file)`
+3. `get_public_url()`로 URL을 받아 `detections.insert()`에 `video_url`로 포함
+
+영상 파일은 기기별 폴더(`{device_id}/{timestamp}.mp4`)에 저장하는 것을 권장합니다.
+
+---
+
+## 7. 기기 설정 (이름/설치 위치)
+
+대시보드 우측 상단의 ⚙️ 아이콘을 누르면 등록된 기기 목록과 각 기기의
+"기기 이름"과 "설치 위치"를 직접 수정할 수 있습니다. 저장하면 `device_status`
+테이블의 `display_name`, `location_label` 컬럼이 즉시 업데이트됩니다.
+
+여러 기기를 운영할 때, 기기를 새로 추가하려면 Supabase Table Editor에서
+`device_status` 테이블에 새 행을 추가(`device_id`만 필수)하면 대시보드 설정
+화면에 자동으로 나타납니다.
+
+---
+
 ## 화면 구성
 
-- **전체 탭**: 바퀴벌레/모기/파리 요약 카드, 월간 감지 추이, 출몰 위치 비율
+- **전체 탭**: 바퀴벌레/모기/파리 요약 카드, 월간 감지 추이, 출몰 위치 비율, 최근 감지 영상
 - **개별 탭** (바퀴벌레/모기/파리): 박멸률, 주간 감지 수, 주요 출몰 위치
+- **설정 화면** (⚙️): 기기별 이름/설치 위치 수정
 - **하단**: 약품 잔량, 배터리, 기기 상태
+- **언어**: 우측 상단 KO/EN 버튼으로 한국어/영어 전환
 
 데이터가 비어있으면 더미 데이터를 보여주고, Supabase에 실제 감지 데이터가
 쌓이면 자동으로 실제 데이터 기반 화면으로 전환됩니다.

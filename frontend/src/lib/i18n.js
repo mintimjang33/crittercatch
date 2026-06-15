@@ -35,6 +35,20 @@ const dict = {
     deviceNormal: '정상',
     deviceWarning: '점검 필요',
     locations: { 주방: '주방', 욕실: '욕실', 거실: '거실', 침실: '침실', 기타: '기타' },
+    settingsTab: '설정',
+    settingsTitle: '기기 설정',
+    deviceIdLabel: '기기 번호',
+    deviceNameLabel: '기기 이름',
+    deviceLocationLabel: '설치 위치',
+    saveButton: '저장',
+    savedMessage: '저장됨',
+    recentDetectionsTitle: '최근 감지 영상',
+    noVideo: '영상 없음',
+    watchVideo: '영상 보기',
+    closeVideo: '닫기',
+    videoHelp:
+      '기기가 감지 영상을 Supabase Storage(detection-videos 버킷)에 업로드하면 자동으로 여기에 표시됩니다.',
+    pestTypeLabel: { roach: '바퀴벌레', mosquito: '모기', fly: '파리' },
   },
   en: {
     brand: 'CritterCatch · Smart Pest Control',
@@ -63,6 +77,20 @@ const dict = {
     deviceNormal: 'Normal',
     deviceWarning: 'Check Needed',
     locations: { 주방: 'Kitchen', 욕실: 'Bathroom', 거실: 'Living Room', 침실: 'Bedroom', 기타: 'Other' },
+    settingsTab: 'Settings',
+    settingsTitle: 'Device Settings',
+    deviceIdLabel: 'Device ID',
+    deviceNameLabel: 'Device Name',
+    deviceLocationLabel: 'Install Location',
+    saveButton: 'Save',
+    savedMessage: 'Saved',
+    recentDetectionsTitle: 'Recent Detection Videos',
+    noVideo: 'No video',
+    watchVideo: 'Watch video',
+    closeVideo: 'Close',
+    videoHelp:
+      'When a device uploads a detection video to the Supabase Storage "detection-videos" bucket, it appears here automatically.',
+    pestTypeLabel: { roach: 'Roach', mosquito: 'Mosquito', fly: 'Fly' },
   },
 }
 
@@ -84,4 +112,24 @@ export function translateLocation(lang, label) {
 export function translatePestLabel(lang, key) {
   const table = dict[lang] || dict.ko
   return table.pestLabels?.[key] || key
+}
+
+// 상대 시간 표시 (예: "30분 전" / "30 min ago")
+export function timeAgo(lang, isoString) {
+  const diffMs = Date.now() - new Date(isoString).getTime()
+  const minutes = Math.floor(diffMs / 60000)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (lang === 'en') {
+    if (minutes < 1) return 'just now'
+    if (minutes < 60) return `${minutes} min ago`
+    if (hours < 24) return `${hours}h ago`
+    return `${days}d ago`
+  }
+
+  if (minutes < 1) return '방금'
+  if (minutes < 60) return `${minutes}분 전`
+  if (hours < 24) return `${hours}시간 전`
+  return `${days}일 전`
 }

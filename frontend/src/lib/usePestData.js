@@ -6,6 +6,8 @@ import {
   dummyLocationsAll,
   dummyPestDetail,
   dummyDeviceStatus,
+  dummyRecentDetections,
+  dummyDevices,
 } from './dummyData'
 
 // ============================================================
@@ -78,6 +80,8 @@ export function usePestData() {
   const [locationsAll, setLocationsAll] = useState(dummyLocationsAll)
   const [pestDetail, setPestDetail] = useState(dummyPestDetail)
   const [deviceStatus, setDeviceStatus] = useState(dummyDeviceStatus)
+  const [recentDetections, setRecentDetections] = useState(dummyRecentDetections)
+  const [devices, setDevices] = useState(dummyDevices)
 
   useEffect(() => {
     if (!supabase) {
@@ -111,14 +115,22 @@ export function usePestData() {
         return
       }
 
+      // device_status는 데이터가 있으면 항상 최신 상태로 반영 (기기 설정 화면용)
+      if (statusRows && statusRows.length > 0) {
+        setDevices(statusRows)
+      }
+
       if (rows.length === 0) {
-        // 테이블은 연결됐지만 아직 데이터가 없는 경우 -> 더미 데이터 유지
+        // 테이블은 연결됐지만 아직 감지 데이터가 없는 경우 -> 더미 감지 데이터 유지
         setUsingDummy(true)
         setLoading(false)
         return
       }
 
       setUsingDummy(false)
+
+      // 최근 감지 이력 (영상 보기용, 최대 10건)
+      setRecentDetections(rows.slice(0, 10))
 
       // 전체 집계
       setWeeklyAll(
@@ -203,5 +215,40 @@ export function usePestData() {
     }
   }, [])
 
-  return { loading, usingDummy, summary, weeklyAll, locationsAll, pestDetail, deviceStatus }
+  // 설정 화면에서 기기 별칭/설치 위치를 수정할 때 호출
+  async function updateDevice(deviceId, fields) {
+    if (!supabase) {
+      // Supabase 미연결 시: 더미 상태만 로컬에서 업데이트
+      setDevices((prev) =>
+        prev.map((d) => (d.device_id === deviceId ? { ...d, ...fields } : d))
+      )
+      return { error: null }
+    }
+
+    const { error } = await supabase
+      .from('device_status')
+      .update(fields)
+      .eq('device_id', deviceId)
+
+    if (!error) {
+      setDevices((prev) =>
+        prev.map((d) => (d.device_id === deviceId ? { ...d, ...fields } : d))
+      )
+    }
+
+    return { error }
+  }
+
+  return {
+    loading,
+    usingDummy,
+    summary,
+    weeklyAll,
+    locationsAll,
+    pestDetail,
+    deviceStatus,
+    recentDetections,
+    devices,
+    updateDevice,
+  }
 }
