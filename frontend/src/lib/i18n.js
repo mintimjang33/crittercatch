@@ -17,7 +17,7 @@ const dict = {
     loading: '불러오는 중...',
     dummyNotice:
       'Supabase가 연결되지 않아 샘플 데이터를 표시하고 있습니다. .env 설정 후 새로고침하면 실시간 데이터로 전환됩니다.',
-    tabs: { all: '전체', roach: '바퀴벌레', mosquito: '모기', fly: '파리' },
+    tabs: { all: '전체', roach: '바퀴벌레', mosquito: '모기', fly: '파리', baby: '베이비' },
     pestLabels: { roach: '바퀴벌레', mosquito: '모기', fly: '파리' },
     monthlyTrend: '이번달 전체 감지 추이',
     outbreakLocations: '출몰 위치',
@@ -49,6 +49,30 @@ const dict = {
     videoHelp:
       '기기가 감지 영상을 Supabase Storage(detection-videos 버킷)에 업로드하면 자동으로 여기에 표시됩니다.',
     pestTypeLabel: { roach: '바퀴벌레', mosquito: '모기', fly: '파리' },
+
+    // 베이비캠 / 양방향 오디오
+    babyCamTitle: '베이비캠',
+    liveStream: '실시간 영상',
+    streamLive: '실시간 연결됨',
+    streamNotConfigured: '아직 영상 스트림 주소가 등록되지 않았어요.',
+    streamLoadError: '영상을 불러올 수 없습니다. 기기 전원/Wi-Fi 또는 주소를 확인해주세요.',
+    streamUrlLabel: '영상 스트림 주소 (MJPEG/HLS)',
+    talkUrlLabel: '음성 송신 주소 (WebSocket)',
+    streamSettingsTitle: '베이비캠 연결 설정',
+    pressToTalk: '누르고 말하기',
+    talkingNow: '말하는 중...',
+    talkReleaseHint: '버튼을 누르고 있는 동안 마이크 소리가 기기 스피커로 전달됩니다.',
+    micPermissionError: '마이크 권한을 허용해주세요.',
+    talkUrlMissing: '음성 송신 주소를 먼저 등록해주세요.',
+    sleepStatus: '수면 상태',
+    sleepStatusSleeping: '수면 중',
+    sleepStatusAwake: '깨어있음',
+    cryDetection: '울음 감지',
+    lastCryAt: (time) => `최근 울음 감지: ${time}`,
+    noCryDetected: '감지된 울음 없음',
+    roomTemp: '실내 온도',
+    babyCamHelp:
+      '라즈베리파이에서 mjpg-streamer 등으로 영상을 스트리밍하고, 마이크 입력을 받는 WebSocket 오디오 서버를 함께 실행하면 이 화면에서 실시간 영상 확인과 양방향 대화가 가능합니다.',
   },
   en: {
     brand: 'CritterCatch · Smart Pest Control',
@@ -59,7 +83,7 @@ const dict = {
     loading: 'Loading...',
     dummyNotice:
       'Supabase is not connected, so sample data is shown. Set up your .env file and refresh to switch to live data.',
-    tabs: { all: 'All', roach: 'Roach', mosquito: 'Mosquito', fly: 'Fly' },
+    tabs: { all: 'All', roach: 'Roach', mosquito: 'Mosquito', fly: 'Fly', baby: 'Baby' },
     pestLabels: { roach: 'Roach', mosquito: 'Mosquito', fly: 'Fly' },
     monthlyTrend: 'Monthly Detection Trend',
     outbreakLocations: 'Outbreak Locations',
@@ -91,6 +115,30 @@ const dict = {
     videoHelp:
       'When a device uploads a detection video to the Supabase Storage "detection-videos" bucket, it appears here automatically.',
     pestTypeLabel: { roach: 'Roach', mosquito: 'Mosquito', fly: 'Fly' },
+
+    // Baby cam / two-way audio
+    babyCamTitle: 'Baby Cam',
+    liveStream: 'Live Stream',
+    streamLive: 'Live',
+    streamNotConfigured: 'No video stream URL has been set up yet.',
+    streamLoadError: 'Unable to load the stream. Check the device power/Wi-Fi or the URL.',
+    streamUrlLabel: 'Video Stream URL (MJPEG/HLS)',
+    talkUrlLabel: 'Audio Send URL (WebSocket)',
+    streamSettingsTitle: 'Baby Cam Connection Settings',
+    pressToTalk: 'Press to Talk',
+    talkingNow: 'Talking...',
+    talkReleaseHint: 'While holding the button, your mic audio is sent to the device speaker.',
+    micPermissionError: 'Please allow microphone access.',
+    talkUrlMissing: 'Set an audio send URL first.',
+    sleepStatus: 'Sleep Status',
+    sleepStatusSleeping: 'Sleeping',
+    sleepStatusAwake: 'Awake',
+    cryDetection: 'Cry Detection',
+    lastCryAt: (time) => `Last cry detected: ${time}`,
+    noCryDetected: 'No cry detected',
+    roomTemp: 'Room Temp',
+    babyCamHelp:
+      'Run mjpg-streamer (or similar) on the Raspberry Pi for video, plus a WebSocket audio server for the microphone input, to enable live video and two-way talk here.',
   },
 }
 

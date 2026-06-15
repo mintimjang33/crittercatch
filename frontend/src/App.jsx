@@ -8,8 +8,9 @@ import PestDetailCard from './components/PestDetailCard'
 import DeviceStatus from './components/DeviceStatus'
 import RecentDetections from './components/RecentDetections'
 import DeviceSettings from './components/DeviceSettings'
+import BabyCam from './components/BabyCam'
 
-const TAB_KEYS = ['all', 'roach', 'mosquito', 'fly']
+const TAB_KEYS = ['all', 'roach', 'mosquito', 'fly', 'baby']
 
 export default function App() {
   const [tab, setTab] = useState('all')
@@ -25,6 +26,7 @@ export default function App() {
     deviceStatus,
     recentDetections,
     devices,
+    babyStatus,
     updateDevice,
     addDevice,
   } = usePestData()
@@ -194,7 +196,7 @@ export default function App() {
                       cursor: 'pointer',
                     }}
                   >
-                    {key === 'all' ? t('tabs').all : translatePestLabel(lang, key)}
+                    {key === 'all' ? t('tabs').all : key === 'baby' ? t('tabs').baby : translatePestLabel(lang, key)}
                   </button>
                 )
               })}
@@ -209,6 +211,13 @@ export default function App() {
                 <LocationTags title={t('outbreakLocations')} locations={locationsAll} lang={lang} />
                 <RecentDetections items={recentDetections} lang={lang} />
               </div>
+            ) : tab === 'baby' ? (
+              <BabyCam
+                device={devices.find((d) => d.device_type === 'babycam') || devices.find((d) => d.device_id.includes('babycam'))}
+                babyStatus={babyStatus}
+                updateDevice={updateDevice}
+                lang={lang}
+              />
             ) : (
               <PestDetailCard detail={pestDetail[tab]} lang={lang} />
             )}

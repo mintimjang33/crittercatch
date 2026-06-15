@@ -8,6 +8,7 @@ import {
   dummyDeviceStatus,
   dummyRecentDetections,
   dummyDevices,
+  dummyBabyStatus,
 } from './dummyData'
 
 // ============================================================
@@ -82,6 +83,7 @@ export function usePestData() {
   const [deviceStatus, setDeviceStatus] = useState(dummyDeviceStatus)
   const [recentDetections, setRecentDetections] = useState(dummyRecentDetections)
   const [devices, setDevices] = useState(dummyDevices)
+  const [babyStatus, setBabyStatus] = useState(dummyBabyStatus)
 
   useEffect(() => {
     if (!supabase) {
@@ -106,6 +108,12 @@ export function usePestData() {
         .from('device_status')
         .select('*')
 
+      // 베이비캠 상태 (수면/울음 감지). 테이블이 없거나 비어있으면 더미 유지.
+      const { data: babyRows } = await supabase
+        .from('baby_status')
+        .select('*')
+        .limit(1)
+
       if (cancelled) return
 
       if (error || !rows) {
@@ -118,6 +126,10 @@ export function usePestData() {
       // device_status는 데이터가 있으면 항상 최신 상태로 반영 (기기 설정 화면용)
       if (statusRows && statusRows.length > 0) {
         setDevices(statusRows)
+      }
+
+      if (babyRows && babyRows.length > 0) {
+        setBabyStatus(babyRows[0])
       }
 
       if (rows.length === 0) {
@@ -199,12 +211,17 @@ export function usePestData() {
 
     load()
 
-    // Realtime: 새 감지 이벤트가 들어오면 자동 새로고침
+    // Realtime: 새 감지 이벤트 또는 베이비캠 상태 변경 시 자동 새로고침
     const channel = supabase
       .channel('detections-changes')
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'detections' },
+        () => load()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'baby_status' },
         () => load()
       )
       .subscribe()
@@ -260,6 +277,7 @@ export function usePestData() {
     deviceStatus,
     recentDetections,
     devices,
+    babyStatus,
     updateDevice,
     addDevice,
   }

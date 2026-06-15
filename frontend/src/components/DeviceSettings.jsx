@@ -47,7 +47,7 @@ const MY_SERVICES = [
     nameEn: 'Baby Cam',
     descKo: '아기 수면 모니터링 + 울음 감지',
     descEn: 'Baby sleep monitoring + cry detection',
-    active: false,
+    active: true,
   },
   {
     id: 'twoway',
@@ -56,7 +56,7 @@ const MY_SERVICES = [
     nameEn: 'Two-way Audio',
     descKo: '앱에서 아기에게 말하기 + 자장가 재생',
     descEn: 'Talk to baby from app + lullaby playback',
-    active: false,
+    active: true,
   },
 ]
 

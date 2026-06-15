@@ -112,6 +112,7 @@ export const dummyDevices = [
     chemical_level: 68,
     battery_level: 92,
     status: 'normal',
+    device_type: 'pest',
   },
   {
     device_id: 'mosquito-bedroom-01',
@@ -120,5 +121,29 @@ export const dummyDevices = [
     chemical_level: 100,
     battery_level: 88,
     status: 'normal',
+    device_type: 'pest',
+  },
+  {
+    device_id: 'babycam-nursery-01',
+    display_name: '베이비캠',
+    location_label: '아기방 모빌',
+    chemical_level: 0,
+    battery_level: 95,
+    status: 'normal',
+    device_type: 'babycam',
+    // 라즈베리파이의 mjpg-streamer 등 영상 스트림 주소 / 양방향 오디오 WebSocket 주소
+    // 기기 설정 화면 또는 베이비캠 탭에서 직접 등록할 수 있습니다.
+    stream_url: '',
+    talk_ws_url: '',
   },
 ]
+
+// 베이비캠 상태 (수면 모니터링 + 울음 감지). 실제로는 baby_status 테이블에서
+// device_id별로 1행씩 관리되며, 라즈베리파이가 오디오 분석 결과를 주기적으로 갱신합니다.
+export const dummyBabyStatus = {
+  device_id: 'babycam-nursery-01',
+  sleep_status: 'sleeping',
+  last_cry_at: null,
+  room_temp: 24.5,
+  updated_at: new Date().toISOString(),
+}
