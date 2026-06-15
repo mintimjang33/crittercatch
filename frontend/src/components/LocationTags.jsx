@@ -1,6 +1,7 @@
 import { colorFor } from '../lib/colors'
+import { translateLocation } from '../lib/i18n'
 
-export default function LocationTags({ title, locations }) {
+export default function LocationTags({ title, locations, lang }) {
   return (
     <div
       style={{
@@ -34,7 +35,7 @@ export default function LocationTags({ title, locations }) {
                 borderRadius: 10,
               }}
             >
-              {loc.label} {loc.pct}%
+              {translateLocation(lang, loc.label)} {loc.pct}%
             </span>
           )
         })}

@@ -1,5 +1,8 @@
-export default function DeviceStatus({ status }) {
+import { translate } from '../lib/i18n'
+
+export default function DeviceStatus({ status, lang }) {
   const isNormal = status.status === 'normal'
+  const t = (key, ...args) => translate(lang, key, ...args)
 
   return (
     <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
@@ -14,7 +17,7 @@ export default function DeviceStatus({ status }) {
         }}
       >
         <p style={{ fontSize: 11, color: 'var(--color-text-secondary)', margin: 0 }}>
-          약품 잔량
+          {t('chemicalLevel')}
         </p>
         <p
           style={{
@@ -38,7 +41,7 @@ export default function DeviceStatus({ status }) {
         }}
       >
         <p style={{ fontSize: 11, color: 'var(--color-text-secondary)', margin: 0 }}>
-          배터리
+          {t('battery')}
         </p>
         <p
           style={{
@@ -68,7 +71,7 @@ export default function DeviceStatus({ status }) {
             margin: 0,
           }}
         >
-          기기 상태
+          {t('deviceStatus')}
         </p>
         <p
           style={{
@@ -78,7 +81,7 @@ export default function DeviceStatus({ status }) {
             margin: '2px 0 0',
           }}
         >
-          {isNormal ? '정상' : '점검 필요'}
+          {isNormal ? t('deviceNormal') : t('deviceWarning')}
         </p>
       </div>
     </div>

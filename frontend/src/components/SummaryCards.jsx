@@ -1,12 +1,10 @@
 import { colorFor } from '../lib/colors'
+import { PEST_ICONS } from '../lib/icons'
+import { translatePestLabel } from '../lib/i18n'
 
-const PEST_META = {
-  roach: { emoji: '🪳', label: '바퀴벌레' },
-  mosquito: { emoji: '🦟', label: '모기' },
-  fly: { emoji: '🪰', label: '파리' },
-}
+const PEST_KEYS = ['roach', 'mosquito', 'fly']
 
-export default function SummaryCards({ summary }) {
+export default function SummaryCards({ summary, lang }) {
   return (
     <div
       style={{
@@ -16,7 +14,7 @@ export default function SummaryCards({ summary }) {
         marginBottom: 12,
       }}
     >
-      {Object.entries(PEST_META).map(([key, meta]) => {
+      {PEST_KEYS.map((key) => {
         const s = summary[key] || { count: 0, changePct: 0 }
         const isDown = s.changePct <= 0
         const color = isDown ? colorFor('green').text : colorFor('amber').text
@@ -31,15 +29,19 @@ export default function SummaryCards({ summary }) {
               border: '0.5px solid var(--color-border-tertiary)',
             }}
           >
-            <p style={{ fontSize: 20, margin: '0 0 2px' }}>{meta.emoji}</p>
+            <i
+              className={PEST_ICONS[key]}
+              aria-hidden="true"
+              style={{ fontSize: 20, color: 'var(--color-text-secondary)' }}
+            />
             <p
               style={{
                 fontSize: 11,
                 color: 'var(--color-text-secondary)',
-                margin: '0 0 4px',
+                margin: '4px 0 4px',
               }}
             >
-              {meta.label}
+              {translatePestLabel(lang, key)}
             </p>
             <p
               style={{

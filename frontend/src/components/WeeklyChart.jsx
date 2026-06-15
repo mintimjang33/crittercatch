@@ -1,6 +1,8 @@
+import { translate } from '../lib/i18n'
+
 const BAR_COLORS = ['#F09595', '#FAC775', '#C0DD97', '#9FE1CB', '#85B7EB']
 
-export default function WeeklyChart({ title, data }) {
+export default function WeeklyChart({ title, data, lang }) {
   const max = Math.max(...data.map((d) => d.value), 1)
 
   return (
@@ -26,7 +28,7 @@ export default function WeeklyChart({ title, data }) {
       <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 70 }}>
         {data.map((d, i) => (
           <div
-            key={d.week}
+            key={i}
             style={{
               flex: 1,
               display: 'flex',
@@ -44,7 +46,7 @@ export default function WeeklyChart({ title, data }) {
               }}
             />
             <span style={{ fontSize: 10, color: 'var(--color-text-secondary)' }}>
-              {d.week}
+              {translate(lang, 'weekShort', i + 1)}
             </span>
           </div>
         ))}

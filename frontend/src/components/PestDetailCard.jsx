@@ -1,9 +1,12 @@
 import { colorFor } from '../lib/colors'
+import { PEST_ICONS } from '../lib/icons'
+import { translate, translatePestLabel } from '../lib/i18n'
 import LocationTags from './LocationTags'
 
-export default function PestDetailCard({ detail }) {
+export default function PestDetailCard({ detail, lang }) {
   const c = colorFor(detail.color)
-  const weekLabels = ['1주차', '2주차', '3주차', '4주차']
+  const t = (key, ...args) => translate(lang, key, ...args)
+  const label = translatePestLabel(lang, detail.key)
 
   return (
     <div>
@@ -16,8 +19,19 @@ export default function PestDetailCard({ detail }) {
           marginBottom: 12,
         }}
       >
-        <p style={{ fontSize: 13, fontWeight: 500, color: c.text, margin: '0 0 4px' }}>
-          {detail.emoji} {detail.label} 박멸 {detail.eradicationPct}%
+        <p
+          style={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: c.text,
+            margin: '0 0 4px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+          }}
+        >
+          <i className={PEST_ICONS[detail.key]} aria-hidden="true" style={{ fontSize: 16 }} />
+          {label} {t('eradication', detail.eradicationPct)}
         </p>
         <div style={{ background: c.bar, borderRadius: 10, height: 6, margin: '6px 0' }}>
           <div
@@ -29,7 +43,11 @@ export default function PestDetailCard({ detail }) {
             }}
           />
         </div>
-        <p style={{ fontSize: 11, color: c.text, margin: 0 }}>{detail.summaryText}</p>
+        <p style={{ fontSize: 11, color: c.text, margin: 0 }}>
+          {detail.changePct <= 0
+            ? t('summaryDown', detail.thisWeek, Math.abs(detail.changePct))
+            : t('summaryUp', detail.thisWeek)}
+        </p>
       </div>
 
       <div
@@ -49,7 +67,7 @@ export default function PestDetailCard({ detail }) {
             margin: '0 0 8px',
           }}
         >
-          주간 감지 수
+          {t('weeklyDetections')}
         </p>
         <div
           style={{
@@ -61,13 +79,13 @@ export default function PestDetailCard({ detail }) {
         >
           {detail.weekly.map((val, i) => (
             <span key={i}>
-              {weekLabels[i]} <b>{val}마리</b>
+              {t('weekLabel', i + 1)} <b>{t('unitCount', val)}</b>
             </span>
           ))}
         </div>
       </div>
 
-      <LocationTags title="주요 출몰 위치" locations={detail.locations} />
+      <LocationTags title={t('mainOutbreakLocations')} locations={detail.locations} lang={lang} />
     </div>
   )
 }

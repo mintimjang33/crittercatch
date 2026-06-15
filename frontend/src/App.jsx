@@ -1,26 +1,42 @@
 import { useState } from 'react'
 import { usePestData } from './lib/usePestData'
+import { translate, translatePestLabel } from './lib/i18n'
 import SummaryCards from './components/SummaryCards'
 import WeeklyChart from './components/WeeklyChart'
 import LocationTags from './components/LocationTags'
 import PestDetailCard from './components/PestDetailCard'
 import DeviceStatus from './components/DeviceStatus'
 
-const TABS = [
-  { key: 'all', label: '전체' },
-  { key: 'roach', label: '바퀴벌레' },
-  { key: 'mosquito', label: '모기' },
-  { key: 'fly', label: '파리' },
-]
+const TAB_KEYS = ['all', 'roach', 'mosquito', 'fly']
 
 export default function App() {
   const [tab, setTab] = useState('all')
+  const [lang, setLang] = useState('ko')
   const { loading, usingDummy, summary, weeklyAll, locationsAll, pestDetail, deviceStatus } =
     usePestData()
 
-  const allNormal =
-    deviceStatus.status === 'normal' &&
-    Object.values(summary).every((s) => s.changePct <= 0)
+  const t = (key, ...args) => translate(lang, key, ...args)
+
+  // 기기 상태(배터리/약품/오류)와 "신규 감지 발생"은 서로 다른 의미이므로 분리해서 표시합니다.
+  const deviceNormal = deviceStatus.status === 'normal'
+  const hasNewDetections = Object.values(summary).some((s) => s.changePct > 0)
+
+  let badgeLabel
+  let badgeBg
+  let badgeColor
+  if (!deviceNormal) {
+    badgeLabel = t('statusAttention')
+    badgeBg = '#FCEBEB'
+    badgeColor = '#A32D2D'
+  } else if (hasNewDetections) {
+    badgeLabel = t('statusNewDetections')
+    badgeBg = '#FAEEDA'
+    badgeColor = '#854F0B'
+  } else {
+    badgeLabel = t('statusNormal')
+    badgeBg = '#EAF3DE'
+    badgeColor = '#3B6D11'
+  }
 
   return (
     <div style={{ maxWidth: 380, margin: '0 auto', fontFamily: 'var(--font-sans)' }}>
@@ -35,14 +51,15 @@ export default function App() {
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             justifyContent: 'space-between',
             marginBottom: 16,
+            gap: 8,
           }}
         >
           <div>
             <p style={{ fontSize: 13, color: 'var(--color-text-secondary)', margin: 0 }}>
-              CritterCatch · 스마트 해충 퇴치
+              {t('brand')}
             </p>
             <p
               style={{
@@ -52,20 +69,44 @@ export default function App() {
                 color: 'var(--color-text-primary)',
               }}
             >
-              우리집 해충 현황
+              {t('title')}
             </p>
           </div>
-          <div
-            style={{
-              background: allNormal ? '#EAF3DE' : '#FAEEDA',
-              borderRadius: 20,
-              padding: '4px 12px',
-              fontSize: 12,
-              color: allNormal ? '#3B6D11' : '#854F0B',
-              fontWeight: 500,
-            }}
-          >
-            {allNormal ? '전체 정상' : '확인 필요'}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+            <div
+              style={{
+                background: badgeBg,
+                borderRadius: 20,
+                padding: '4px 12px',
+                fontSize: 12,
+                color: badgeColor,
+                fontWeight: 500,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {badgeLabel}
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {['ko', 'en'].map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  style={{
+                    fontSize: 11,
+                    padding: '2px 8px',
+                    borderRadius: 'var(--border-radius-md)',
+                    border: '0.5px solid var(--color-border-secondary)',
+                    background:
+                      lang === l ? 'var(--color-text-primary)' : 'var(--color-background-primary)',
+                    color:
+                      lang === l ? 'var(--color-background-primary)' : 'var(--color-text-secondary)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -80,18 +121,17 @@ export default function App() {
               marginBottom: 12,
             }}
           >
-            Supabase가 연결되지 않아 샘플 데이터를 표시하고 있습니다. .env 설정 후
-            새로고침하면 실시간 데이터로 전환됩니다.
+            {t('dummyNotice')}
           </div>
         )}
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-          {TABS.map((t) => {
-            const active = tab === t.key
+          {TAB_KEYS.map((key) => {
+            const active = tab === key
             return (
               <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
+                key={key}
+                onClick={() => setTab(key)}
                 style={{
                   flex: 1,
                   padding: '7px 0',
@@ -108,25 +148,25 @@ export default function App() {
                   cursor: 'pointer',
                 }}
               >
-                {t.label}
+                {key === 'all' ? t('tabs').all : translatePestLabel(lang, key)}
               </button>
             )
           })}
         </div>
 
         {loading ? (
-          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>불러오는 중...</p>
+          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>{t('loading')}</p>
         ) : tab === 'all' ? (
           <div>
-            <SummaryCards summary={summary} />
-            <WeeklyChart title="이번달 전체 감지 추이" data={weeklyAll} />
-            <LocationTags title="출몰 위치" locations={locationsAll} />
+            <SummaryCards summary={summary} lang={lang} />
+            <WeeklyChart title={t('monthlyTrend')} data={weeklyAll} lang={lang} />
+            <LocationTags title={t('outbreakLocations')} locations={locationsAll} lang={lang} />
           </div>
         ) : (
-          <PestDetailCard detail={pestDetail[tab]} />
+          <PestDetailCard detail={pestDetail[tab]} lang={lang} />
         )}
 
-        <DeviceStatus status={deviceStatus} />
+        <DeviceStatus status={deviceStatus} lang={lang} />
       </div>
     </div>
   )

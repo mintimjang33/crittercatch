@@ -24,10 +24,10 @@ export const dummyLocationsAll = [
 
 export const dummyPestDetail = {
   roach: {
-    emoji: '🪳',
-    label: '바퀴벌레',
+    key: 'roach',
     eradicationPct: 87,
-    summaryText: '이번주 3마리 감지 → 지난주 대비 83% 감소',
+    thisWeek: 3,
+    changePct: -83,
     weekly: [18, 11, 5, 3],
     locations: [
       { label: '주방', pct: 55, color: 'red' },
@@ -37,10 +37,10 @@ export const dummyPestDetail = {
     color: 'red',
   },
   mosquito: {
-    emoji: '🦟',
-    label: '모기',
+    key: 'mosquito',
     eradicationPct: 53,
-    summaryText: '이번주 7마리 감지 → 계속 퇴치 중',
+    thisWeek: 7,
+    changePct: 0,
     weekly: [15, 12, 9, 7],
     locations: [
       { label: '침실', pct: 48, color: 'amber' },
@@ -50,10 +50,10 @@ export const dummyPestDetail = {
     color: 'amber',
   },
   fly: {
-    emoji: '🪰',
-    label: '파리',
+    key: 'fly',
     eradicationPct: 78,
-    summaryText: '이번주 2마리 감지 → 지난주 대비 78% 감소',
+    thisWeek: 2,
+    changePct: -78,
     weekly: [9, 6, 3, 2],
     locations: [
       { label: '주방', pct: 65, color: 'red' },

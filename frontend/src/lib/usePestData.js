@@ -28,8 +28,6 @@ import {
 // ============================================================
 
 const PEST_TYPES = ['roach', 'mosquito', 'fly']
-const PEST_LABELS = { roach: '바퀴벌레', mosquito: '모기', fly: '파리' }
-const PEST_EMOJI = { roach: '🪳', mosquito: '🦟', fly: '🪰' }
 const PEST_COLOR = { roach: 'red', mosquito: 'amber', fly: 'green' }
 
 function startOfWeeksAgo(weeksAgo) {
@@ -158,13 +156,10 @@ export function usePestData() {
         }
 
         nextDetail[type] = {
-          emoji: PEST_EMOJI[type],
-          label: PEST_LABELS[type],
+          key: type,
           eradicationPct,
-          summaryText:
-            changePct <= 0
-              ? `이번주 ${thisWeek}마리 감지 → 지난주 대비 ${Math.abs(changePct)}% 감소`
-              : `이번주 ${thisWeek}마리 감지 → 계속 퇴치 중`,
+          thisWeek,
+          changePct,
           weekly,
           locations: aggregateLocations(typeRows),
           color: PEST_COLOR[type],
