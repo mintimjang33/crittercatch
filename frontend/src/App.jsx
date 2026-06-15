@@ -26,6 +26,7 @@ export default function App() {
     recentDetections,
     devices,
     updateDevice,
+    addDevice,
   } = usePestData()
 
   const t = (key, ...args) => translate(lang, key, ...args)
@@ -164,7 +165,7 @@ export default function App() {
         )}
 
         {showSettings ? (
-          <DeviceSettings devices={devices} updateDevice={updateDevice} lang={lang} />
+          <DeviceSettings devices={devices} updateDevice={updateDevice} addDevice={addDevice} lang={lang} />
         ) : (
           <>
             <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>

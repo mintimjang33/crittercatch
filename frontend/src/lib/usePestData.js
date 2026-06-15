@@ -215,6 +215,17 @@ export function usePestData() {
     }
   }, [])
 
+
+  // 새 기기 등록
+  async function addDevice(deviceData) {
+    if (!supabase) {
+      setDevices((prev) => [...prev, deviceData])
+      return { error: null }
+    }
+    const { error } = await supabase.from("device_status").insert([deviceData])
+    if (!error) setDevices((prev) => [...prev, deviceData])
+    return { error }
+  }
   // 설정 화면에서 기기 별칭/설치 위치를 수정할 때 호출
   async function updateDevice(deviceId, fields) {
     if (!supabase) {
@@ -250,5 +261,6 @@ export function usePestData() {
     recentDetections,
     devices,
     updateDevice,
+    addDevice,
   }
 }
