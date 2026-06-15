@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CritterCatch — AI 스마트 해충 감지 시스템</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root {
+  --mint:#1D9E75; --mint-mid:#5DCAA5; --mint-light:#E1F5EE;
+  --dark:#0D1A14; --dark2:#142218;
+  --gray:#4A5A50; --gray-light:#8FA898;
+  --amber:#854F0B; --amber-light:#FAEEDA;
+  --blue:#185FA5; --blue-light:#E6F1FB;
+  --fd:'Space Grotesk',sans-serif; --fb:'Noto Sans KR',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--dark);color:#fff;font-family:var(--fb);line-height:1.6;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(13,26,20,0.92);backdrop-filter:blur(12px);border-bottom:0.5px solid rgba(93,202,165,0.15);}
+.logo{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--mint-mid);text-decoration:none;}
+.nav-links{display:flex;align-items:center;gap:24px;list-style:none;}
+.nav-links a{font-size:13px;color:var(--gray-light);text-decoration:none;font-family:var(--fd);transition:color .2s;}
+.nav-links a:hover{color:var(--mint-mid);}
+.btn-nav{padding:8px 20px;border-radius:50px;background:var(--mint);color:#fff!important;font-weight:500;transition:background .2s!important;}
+.btn-nav:hover{background:var(--mint-mid)!important;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(29,158,117,0.18) 0%,transparent 70%);}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(93,202,165,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(93,202,165,0.04) 1px,transparent 1px);background-size:60px 60px;}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;border:0.5px solid rgba(93,202,165,0.4);background:rgba(29,158,117,0.1);font-size:12px;color:var(--mint-mid);font-family:var(--fd);margin-bottom:28px;}
+.bdot{width:6px;height:6px;border-radius:50%;background:var(--mint);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero h1{font-family:var(--fd);font-size:clamp(38px,7vw,74px);font-weight:700;letter-spacing:-2px;line-height:1.05;margin-bottom:20px;}
+.hero h1 span{color:var(--mint-mid);}
+.hero-sub{font-size:clamp(14px,2vw,17px);color:var(--gray-light);max-width:460px;margin-bottom:40px;line-height:1.7;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px;}
+.btn-p{padding:14px 32px;border-radius:50px;background:var(--mint);color:#fff;font-size:15px;font-weight:500;font-family:var(--fd);border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .2s,background .2s;}
+.btn-p:hover{background:var(--mint-mid);transform:translateY(-1px);}
+.btn-o{padding:14px 32px;border-radius:50px;background:transparent;color:var(--gray-light);font-size:15px;font-family:var(--fd);border:0.5px solid rgba(255,255,255,0.15);cursor:pointer;text-decoration:none;display:inline-block;transition:border-color .2s,color .2s;}
+.btn-o:hover{border-color:var(--mint-mid);color:var(--mint-mid);}
+
+/* 타겟 카드 (히어로 하단) */
+.target-cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.tc{padding:14px 24px;border-radius:12px;border:0.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;transition:border-color .2s,background .2s;}
+.tc:hover{border-color:rgba(93,202,165,0.4);background:rgba(29,158,117,0.08);}
+.tc-icon{font-size:22px;}
+.tc-text{text-align:left;}
+.tc-title{font-family:var(--fd);font-size:13px;font-weight:600;color:#fff;}
+.tc-sub{font-size:11px;color:var(--gray-light);}
+
+/* STATS */
+.stats{display:flex;justify-content:center;border-top:0.5px solid rgba(255,255,255,0.06);border-bottom:0.5px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);}
+.stat{flex:1;max-width:200px;text-align:center;padding:28px 16px;border-right:0.5px solid rgba(255,255,255,0.06);}
+.stat:last-child{border-right:none;}
+.sn{font-family:var(--fd);font-size:34px;font-weight:700;color:var(--mint-mid);letter-spacing:-1px;line-height:1;margin-bottom:5px;}
+.sl{font-size:12px;color:var(--gray-light);}
+
+/* SECTIONS */
+.sec{padding:90px 24px;max-width:1060px;margin:0 auto;}
+.sec-alt{padding:90px 24px;background:var(--dark2);}
+.sec-alt-in{max-width:1060px;margin:0 auto;}
+.eye{font-family:var(--fd);font-size:11px;letter-spacing:3px;color:var(--mint);text-transform:uppercase;margin-bottom:14px;}
+.st{font-family:var(--fd);font-size:clamp(26px,4vw,42px);font-weight:700;letter-spacing:-1px;line-height:1.1;margin-bottom:14px;}
+.ss{font-size:15px;color:var(--gray-light);max-width:460px;line-height:1.7;margin-bottom:52px;}
+
+/* ── 가정용 섹션 ── */
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;margin-top:52px;}
+.home-devices{display:flex;flex-direction:column;gap:16px;}
+.device-card{background:var(--dark2);border-radius:14px;border:0.5px solid rgba(93,202,165,0.15);padding:20px;display:flex;gap:16px;align-items:flex-start;transition:border-color .2s;}
+.device-card:hover{border-color:rgba(93,202,165,0.4);}
+.dc-icon{width:52px;height:52px;border-radius:10px;background:rgba(29,158,117,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px;}
+.dc-body h4{font-family:var(--fd);font-size:14px;font-weight:600;margin-bottom:5px;}
+.dc-body p{font-size:12px;color:var(--gray-light);line-height:1.6;margin-bottom:8px;}
+.dc-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(29,158,117,0.1);color:var(--mint-mid);border:0.5px solid rgba(93,202,165,0.2);}
+
+.home-features{display:flex;flex-direction:column;gap:20px;}
+.hf{display:flex;gap:14px;align-items:flex-start;}
+.hf-icon{width:40px;height:40px;border-radius:10px;background:rgba(29,158,117,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hf-icon i{font-size:18px;color:var(--mint-mid);}
+.hf h4{font-family:var(--fd);font-size:14px;font-weight:600;margin-bottom:4px;}
+.hf p{font-size:12px;color:var(--gray-light);line-height:1.6;}
+
+/* 앱 미리보기 */
+.app-mock{background:var(--dark2);border-radius:16px;border:0.5px solid rgba(93,202,165,0.2);padding:18px;margin-top:52px;}
+.am-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.am-title{font-family:var(--fd);font-size:14px;font-weight:600;}
+.am-badge{background:#EAF3DE;color:#3B6D11;padding:3px 10px;border-radius:20px;font-size:10px;}
+.am-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.amc{background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;text-align:center;}
+.amc-n{font-family:var(--fd);font-size:20px;font-weight:600;margin-bottom:2px;}
+.amc-l{font-size:10px;color:var(--gray-light);}
+.amc-c{font-size:10px;color:#3B6D11;}
+.am-chart{background:rgba(255,255,255,0.04);border-radius:8px;padding:12px;}
+.am-chart-label{font-size:10px;color:var(--gray-light);margin-bottom:8px;}
+.am-bars{display:flex;align-items:flex-end;gap:6px;height:44px;}
+.am-bar{flex:1;border-radius:3px 3px 0 0;}
+.am-weeks{display:flex;justify-content:space-around;margin-top:4px;}
+.am-week{font-size:9px;color:var(--gray-light);}
+.am-cta{margin-top:12px;text-align:center;}
+
+/* ── 업소용 섹션 ── */
+.biz-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:52px;}
+.biz-features{display:flex;flex-direction:column;gap:0;}
+.biz-feat{padding:20px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);display:flex;gap:16px;align-items:flex-start;}
+.biz-feat:last-child{border-bottom:none;}
+.bf-num{font-family:var(--fd);font-size:28px;font-weight:700;color:rgba(29,158,117,0.3);line-height:1;flex-shrink:0;width:36px;}
+.bf-body h4{font-family:var(--fd);font-size:14px;font-weight:600;margin-bottom:5px;}
+.bf-body p{font-size:12px;color:var(--gray-light);line-height:1.6;}
+
+.biz-mock{background:var(--dark2);border-radius:16px;border:0.5px solid rgba(255,255,255,0.08);overflow:hidden;}
+.biz-mock-head{background:#2C2C2A;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+.bmh-title{font-family:var(--fd);font-size:13px;font-weight:500;color:#F1EFE8;}
+.bmh-badge{background:#EAF3DE;color:#3B6D11;padding:3px 10px;border-radius:20px;font-size:10px;}
+.biz-mock-body{padding:16px;}
+.bm-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.bms{background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;text-align:center;}
+.bms-n{font-family:var(--fd);font-size:18px;font-weight:600;margin-bottom:2px;}
+.bms-l{font-size:10px;color:var(--gray-light);}
+.bm-zones{display:flex;flex-direction:column;gap:6px;}
+.bmz{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(29,158,117,0.06);border-radius:8px;font-size:11px;}
+.bmz-dot{width:6px;height:6px;border-radius:50%;background:var(--mint);margin-right:8px;}
+.bmz-status{background:#EAF3DE;color:#3B6D11;padding:2px 8px;border-radius:10px;font-size:10px;}
+.bm-report{margin-top:10px;padding:10px;background:rgba(255,255,255,0.04);border-radius:8px;display:flex;justify-content:space-between;align-items:center;font-size:11px;}
+.bm-report span{color:var(--gray-light);}
+
+/* 타겟 업소 리스트 */
+.biz-targets{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,0.04);border-radius:12px;overflow:hidden;margin-top:20px;}
+.bt{padding:16px;background:var(--dark);text-align:center;}
+.bt-icon{font-size:22px;margin-bottom:6px;}
+.bt h5{font-family:var(--fd);font-size:12px;font-weight:600;margin-bottom:3px;}
+.bt p{font-size:11px;color:var(--gray-light);}
+
+/* ── 캠핑용 섹션 ── */
+.camp-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:52px;}
+.camp-visual{position:relative;text-align:center;}
+.camp-device{position:relative;display:inline-block;}
+.camp-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(29,158,117,0.25) 0%,transparent 70%);animation:cglow 3s ease-in-out infinite;}
+@keyframes cglow{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
+.camp-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;justify-content:center;}
+.cb{padding:6px 14px;border-radius:50px;font-size:11px;font-family:var(--fd);border:0.5px solid rgba(93,202,165,0.3);color:var(--mint-mid);background:rgba(29,158,117,0.08);}
+
+.camp-features{display:flex;flex-direction:column;gap:18px;}
+.cf{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:12px;background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.06);transition:border-color .2s;}
+.cf:hover{border-color:rgba(93,202,165,0.25);}
+.cf-icon{font-size:24px;flex-shrink:0;}
+.cf h4{font-family:var(--fd);font-size:13px;font-weight:600;margin-bottom:4px;}
+.cf p{font-size:12px;color:var(--gray-light);line-height:1.6;}
+
+/* HOW */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:2px;background:rgba(255,255,255,0.04);border-radius:14px;overflow:hidden;margin-top:52px;}
+.step{padding:28px 22px;background:var(--dark2);transition:background .2s;}
+.step:hover{background:rgba(29,158,117,0.05);}
+.step-n{font-family:var(--fd);font-size:10px;color:var(--mint);letter-spacing:2px;margin-bottom:14px;}
+.step-i{font-size:26px;margin-bottom:12px;}
+.step h3{font-family:var(--fd);font-size:14px;font-weight:600;margin-bottom:7px;}
+.step p{font-size:12px;color:var(--gray-light);line-height:1.6;}
+
+/* PLANS */
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:52px;}
+.plan{border-radius:14px;padding:24px 20px;border:0.5px solid rgba(255,255,255,0.08);background:var(--dark);position:relative;}
+.plan.featured{border-color:var(--mint);background:rgba(29,158,117,0.06);}
+.plan-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:10px;padding:3px 12px;border-radius:50px;background:var(--mint);color:#fff;font-family:var(--fd);white-space:nowrap;}
+.pn{font-family:var(--fd);font-size:13px;color:var(--gray-light);margin-bottom:10px;}
+.pp{font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1;margin-bottom:4px;}
+.pp span{font-size:13px;font-weight:400;color:var(--gray-light);}
+.pd{font-size:11px;color:var(--mint-mid);margin-bottom:18px;}
+.pf{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:20px;}
+.pf li{font-size:12px;color:var(--gray-light);display:flex;gap:7px;}
+.ck{color:var(--mint);flex-shrink:0;}
+
+/* CTA */
+.cta{padding:90px 24px;text-align:center;position:relative;overflow:hidden;}
+.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 50% 50%,rgba(29,158,117,0.12) 0%,transparent 70%);pointer-events:none;}
+.cta h2{font-family:var(--fd);font-size:clamp(28px,5vw,52px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:14px;}
+.cta h2 span{color:var(--mint-mid);}
+.cta p{font-size:15px;color:var(--gray-light);margin-bottom:36px;}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+
+/* FOOTER */
+footer{padding:36px 40px;border-top:0.5px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.fl{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--mint-mid);}
+footer p{font-size:12px;color:var(--gray);}
+
+/* DIVIDER */
+.divider{height:0.5px;background:linear-gradient(90deg,transparent,rgba(93,202,165,0.3),transparent);margin:0 40px;}
+
+@media(max-width:768px){
+  .home-grid,.biz-grid,.camp-grid{grid-template-columns:1fr;}
+  .bm-stats{grid-template-columns:repeat(2,1fr);}
+  .biz-targets{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:640px){
+  nav{padding:14px 20px;}
+  .nav-links{display:none;}
+  .stats{flex-wrap:wrap;}
+  .stat{min-width:45%;border-right:none;border-bottom:0.5px solid rgba(255,255,255,0.06);}
+  footer{flex-direction:column;text-align:center;}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">CritterCatch</a>
+  <ul class="nav-links">
+    <li><a href="#home">가정용</a></li>
+    <li><a href="#biz">업소용</a></li>
+    <li><a href="#camp">캠핑용</a></li>
+    <li><a href="#plans">요금제</a></li>
+    <li><a href="/crittercatch/" class="btn-nav">대시보드 열기</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="badge"><span class="bdot"></span>AI 기반 실시간 해충 감지</div>
+  <h1>해충이 나타나면<br/><span>스스로 잡습니다</span></h1>
+  <p class="hero-sub">카메라가 감지하고, AI가 판별하고, 약품이 자동 분사됩니다.<br/>당신은 앱에서 숫자가 줄어드는 것만 보면 돼요.</p>
+  <div class="hero-btns">
+    <a href="/crittercatch/" class="btn-p"><i class="ti ti-device-mobile"></i> 대시보드 바로가기</a>
+    <a href="#home" class="btn-o">제품 살펴보기</a>
+  </div>
+  <!-- 타겟 선택 카드 -->
+  <div class="target-cards">
+    <a href="#home" class="tc">
+      <div class="tc-icon">🏠</div>
+      <div class="tc-text"><div class="tc-title">가정용</div><div class="tc-sub">주방 · 욕실 · 거실</div></div>
+    </a>
+    <a href="#biz" class="tc">
+      <div class="tc-icon">🍽️</div>
+      <div class="tc-text"><div class="tc-title">업소용</div><div class="tc-sub">식당 · 편의점 · 학교</div></div>
+    </a>
+    <a href="#camp" class="tc">
+      <div class="tc-icon">🏕️</div>
+      <div class="tc-text"><div class="tc-title">캠핑용</div><div class="tc-sub">텐트 · 차박 · 야외</div></div>
+    </a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="sn">24h</div><div class="sl">무인 자동 작동</div></div>
+  <div class="stat"><div class="sn">0.2ml</div><div class="sl">소량 정밀 분사</div></div>
+  <div class="stat"><div class="sn">90%+</div><div class="sl">AI 감지 정확도</div></div>
+  <div class="stat"><div class="sn">3종</div><div class="sl">바퀴벌레·모기·파리</div></div>
+</div>
+
+<!-- ══ 가정용 ══ -->
+<section class="sec" id="home">
+  <div class="eye">가정용</div>
+  <h2 class="st">우리 집 구석구석<br/>24시간 지킵니다</h2>
+  <p class="ss">설치하고 잊어버리세요. 바퀴벌레가 나타나면 자동으로 퇴치하고, 앱으로 알려줍니다.</p>
+
+  <div class="home-grid">
+    <div class="home-devices">
+      <div class="device-card">
+        <div class="dc-icon">🪳</div>
+        <div class="dc-body">
+          <h4>바퀴벌레 감지기 (구석형)</h4>
+          <p>주방 싱크대 하부, 화장실 문 옆 구석에 딱 맞는 삼각뿔 디자인. 인테리어 소품처럼 자연스러워요.</p>
+          <div class="dc-tags">
+            <span class="tag">IR 카메라</span>
+            <span class="tag">IR LED ×4</span>
+            <span class="tag">페로몬 유인</span>
+            <span class="tag">자동 분사</span>
+            <span class="tag">USB-C 충전</span>
+          </div>
+        </div>
+      </div>
+      <div class="device-card">
+        <div class="dc-icon">🦟</div>
+        <div class="dc-body">
+          <h4>모기 감지기 (창문형)</h4>
+          <p>창문 틀에 붙이는 슬림 디자인. UV로 유인하고 끈끈이로 포획합니다. 약품 없이 안전하게.</p>
+          <div class="dc-tags">
+            <span class="tag">UV LED</span>
+            <span class="tag">끈끈이 트랩</span>
+            <span class="tag">무약품</span>
+            <span class="tag">아기 안전</span>
+            <span class="tag">USB-C 충전</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-features">
+      <div class="hf">
+        <div class="hf-icon"><i class="ti ti-wifi"></i></div>
+        <div>
+          <h4>Wi-Fi 자동 연결</h4>
+          <p>집 Wi-Fi에 연결하면 감지 데이터가 실시간으로 앱에 전송됩니다. 별도 허브 불필요.</p>
+        </div>
+      </div>
+      <div class="hf">
+        <div class="hf-icon"><i class="ti ti-qrcode"></i></div>
+        <div>
+          <h4>QR 코드로 10초 등록</h4>
+          <p>스마트폰 카메라로 기기의 QR 코드를 스캔하면 자동으로 앱에 연결됩니다.</p>
+        </div>
+      </div>
+      <div class="hf">
+        <div class="hf-icon"><i class="ti ti-bell"></i></div>
+        <div>
+          <h4>실시간 푸시 알림</h4>
+          <p>감지 즉시 스마트폰으로 알림이 와요. 취침 시간엔 무음 모드로 자동 전환됩니다.</p>
+        </div>
+      </div>
+      <div class="hf">
+        <div class="hf-icon"><i class="ti ti-chart-bar"></i></div>
+        <div>
+          <h4>줄어드는 숫자로 확인</h4>
+          <p>주차별 감지 수가 그래프로 줄어드는 걸 앱에서 확인합니다. 방역 효과가 눈에 보여요.</p>
+        </div>
+      </div>
+      <div class="hf">
+        <div class="hf-icon"><i class="ti ti-battery-charging"></i></div>
+        <div>
+          <h4>내장 배터리 · 휴대 가능</h4>
+          <p>USB-C로 충전하면 콘센트 없는 곳에서도 12~24시간 작동합니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 앱 미리보기 -->
+  <div class="app-mock">
+    <div class="am-head">
+      <div>
+        <div style="font-size:10px;color:var(--gray-light);margin-bottom:2px;">CritterCatch · 스마트 해충 퇴치</div>
+        <div class="am-title">우리집 해충 현황</div>
+      </div>
+      <div class="am-badge">전체 정상</div>
+    </div>
+    <div class="am-cards">
+      <div class="amc">
+        <div style="font-size:14px;margin-bottom:3px;">🪳</div>
+        <div class="amc-l">바퀴벌레</div>
+        <div class="amc-n">3</div>
+        <div class="amc-c">▼ 83%</div>
+      </div>
+      <div class="amc">
+        <div style="font-size:14px;margin-bottom:3px;">🦟</div>
+        <div class="amc-l">모기</div>
+        <div class="amc-n">7</div>
+        <div class="amc-c" style="color:#854F0B;">▼ 53%</div>
+      </div>
+      <div class="amc">
+        <div style="font-size:14px;margin-bottom:3px;">🪰</div>
+        <div class="amc-l">파리</div>
+        <div class="amc-n">2</div>
+        <div class="amc-c">▼ 78%</div>
+      </div>
+    </div>
+    <div class="am-chart">
+      <div class="am-chart-label">이번달 감지 추이</div>
+      <div class="am-bars">
+        <div class="am-bar" style="height:100%;background:#F09595;"></div>
+        <div class="am-bar" style="height:62%;background:#FAC775;"></div>
+        <div class="am-bar" style="height:32%;background:#C0DD97;"></div>
+        <div class="am-bar" style="height:12%;background:#9FE1CB;"></div>
+      </div>
+      <div class="am-weeks">
+        <span class="am-week">1주</span><span class="am-week">2주</span><span class="am-week">3주</span><span class="am-week">4주</span>
+      </div>
+    </div>
+    <div class="am-cta">
+      <a href="/crittercatch/" class="btn-p" style="font-size:12px;padding:9px 22px;">대시보드 직접 보기 →</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ 업소용 ══ -->
+<div class="sec-alt" id="biz">
+  <div class="sec-alt-in">
+    <div class="eye">업소용</div>
+    <h2 class="st">위생 점검도<br/>데이터로 증명하세요</h2>
+    <p class="ss">식약처 점검이 두렵지 않습니다. 24시간 자동 방역에 리포트까지 자동 생성해드려요.</p>
+
+    <div class="biz-grid">
+      <div class="biz-features">
+        <div class="biz-feat">
+          <div class="bf-num">01</div>
+          <div class="bf-body">
+            <h4>구역별 기기 통합 관리</h4>
+            <p>주방, 화장실, 홀, 창문 등 구역마다 기기를 설치하고 태블릿 하나로 전체 현황을 확인합니다.</p>
+          </div>
+        </div>
+        <div class="biz-feat">
+          <div class="bf-num">02</div>
+          <div class="bf-body">
+            <h4>월간 위생 리포트 자동 생성</h4>
+            <p>감지 이력, 출몰 위치, 퇴치 횟수를 자동으로 정리한 보고서를 출력해 식약처 점검 자료로 활용합니다.</p>
+          </div>
+        </div>
+        <div class="biz-feat">
+          <div class="bf-num">03</div>
+          <div class="bf-body">
+            <h4>세스코 대비 절반 이하 비용</h4>
+            <p>기존 방역 업체 월 15~30만원 대비 월 4.9만원. 실시간 데이터까지 더해 훨씬 투명합니다.</p>
+          </div>
+        </div>
+        <div class="biz-feat">
+          <div class="bf-num">04</div>
+          <div class="bf-body">
+            <h4>약품 잔량 · 배터리 원격 확인</h4>
+            <p>카트리지 교체 시기, 배터리 상태를 앱에서 미리 알려드려 방역 공백이 생기지 않습니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 업소용 대시보드 목업 -->
+      <div class="biz-mock">
+        <div class="biz-mock-head">
+          <div>
+            <div style="font-size:10px;color:#888780;margin-bottom:2px;">해충 위생 관리 시스템</div>
+            <div class="bmh-title">맛있는 식당 · 강남점</div>
+          </div>
+          <div class="bmh-badge">위생 양호</div>
+        </div>
+        <div class="biz-mock-body">
+          <div class="bm-stats">
+            <div class="bms"><div class="bms-n" style="color:#3B6D11;">0</div><div class="bms-l">오늘 감지</div></div>
+            <div class="bms"><div class="bms-n">4</div><div class="bms-l">이번주</div></div>
+            <div class="bms"><div class="bms-n" style="color:#3B6D11;">A+</div><div class="bms-l">위생점수</div></div>
+            <div class="bms"><div class="bms-n" style="color:#3B6D11;">100%</div><div class="bms-l">가동률</div></div>
+          </div>
+          <div class="bm-zones">
+            <div class="bmz"><span><span class="bmz-dot"></span>주방 바퀴벌레 감지기 ×3</span><span class="bmz-status">정상</span></div>
+            <div class="bmz"><span><span class="bmz-dot"></span>화장실 바퀴벌레 감지기 ×2</span><span class="bmz-status">정상</span></div>
+            <div class="bmz"><span><span class="bmz-dot"></span>창문 모기 감지기 ×5</span><span class="bmz-status">정상</span></div>
+            <div class="bmz"><span><span class="bmz-dot"></span>홀 파리 감지기 ×2</span><span class="bmz-status">정상</span></div>
+          </div>
+          <div class="bm-report">
+            <span>📄 6월 위생 관리 보고서</span>
+            <span style="color:var(--mint-mid);cursor:pointer;">출력 →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 업소 타겟 -->
+    <div class="biz-targets">
+      <div class="bt"><div class="bt-icon">🍽️</div><h5>식당·음식점</h5><p>위생 점검 대비</p></div>
+      <div class="bt"><div class="bt-icon">🏪</div><h5>무인 편의점</h5><p>24시간 원격 방역</p></div>
+      <div class="bt"><div class="bt-icon">🏫</div><h5>학교·유치원</h5><p>무독성 안전 방역</p></div>
+      <div class="bt"><div class="bt-icon">🏨</div><h5>숙박업소</h5><p>투숙객 위생 보장</p></div>
+      <div class="bt"><div class="bt-icon">🏢</div><h5>사무실·건물</h5><p>건물 전체 통합 관리</p></div>
+      <div class="bt"><div class="bt-icon">🏥</div><h5>의료·복지시설</h5><p>엄격한 위생 기준 충족</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══ 캠핑용 ══ -->
+<section class="sec" id="camp">
+  <div class="eye">캠핑용</div>
+  <h2 class="st">텐트 안에도<br/>바퀴벌레 없는 밤</h2>
+  <p class="ss">충전해서 텐트에 걸면 끝. 모기도, 바퀴벌레도, 파리도 알아서 처리합니다.</p>
+
+  <div class="camp-grid">
+    <div class="camp-visual">
+      <div class="camp-device">
+        <div class="camp-glow"></div>
+        <svg width="200" height="220" viewBox="0 0 200 220" fill="none">
+          <!-- 삼각뿔 본체 -->
+          <path d="M100 20 L172 185 L28 185 Z" fill="rgba(29,158,117,0.08)" stroke="rgba(93,202,165,0.4)" stroke-width="1.5"/>
+          <path d="M100 20 L172 185 L100 195 Z" fill="rgba(29,158,117,0.04)" stroke="rgba(93,202,165,0.1)" stroke-width="0.5"/>
+          <!-- 카메라 -->
+          <circle cx="100" cy="95" r="13" fill="rgba(4,52,44,0.9)" stroke="rgba(29,158,117,0.6)" stroke-width="1"/>
+          <circle cx="100" cy="95" r="7" fill="#085041"/>
+          <circle cx="100" cy="95" r="3.5" fill="rgba(29,158,117,0.5)"/>
+          <circle cx="97" cy="92" r="1.8" fill="rgba(255,255,255,0.2)"/>
+          <!-- IR LED x4 -->
+          <circle cx="84" cy="80" r="3.5" fill="rgba(8,80,65,0.8)" stroke="rgba(29,158,117,0.5)" stroke-width="0.7"/>
+          <circle cx="116" cy="80" r="3.5" fill="rgba(8,80,65,0.8)" stroke="rgba(29,158,117,0.5)" stroke-width="0.7"/>
+          <circle cx="84" cy="110" r="3.5" fill="rgba(8,80,65,0.8)" stroke="rgba(29,158,117,0.5)" stroke-width="0.7"/>
+          <circle cx="116" cy="110" r="3.5" fill="rgba(8,80,65,0.8)" stroke="rgba(29,158,117,0.5)" stroke-width="0.7"/>
+          <!-- UV LED -->
+          <circle cx="72" cy="130" r="4" fill="rgba(200,150,255,0.5)" stroke="rgba(200,150,255,0.5)" stroke-width="0.7"/>
+          <circle cx="128" cy="130" r="4" fill="rgba(200,150,255,0.5)" stroke="rgba(200,150,255,0.5)" stroke-width="0.7"/>
+          <!-- 노즐 -->
+          <circle cx="100" cy="148" r="4.5" fill="rgba(15,110,86,0.8)" stroke="rgba(29,158,117,0.4)" stroke-width="0.8"/>
+          <!-- USB-C 상단 -->
+          <rect x="93" y="22" width="14" height="5" rx="2.5" fill="rgba(93,202,165,0.6)"/>
+          <!-- 걸이 고리 -->
+          <circle cx="100" cy="16" r="6" fill="none" stroke="rgba(93,202,165,0.6)" stroke-width="2"/>
+          <rect x="96" y="10" width="8" height="7" rx="2" fill="rgba(93,202,165,0.15)"/>
+          <!-- 방수 표시 -->
+          <path d="M148 55 Q155 45 162 55 Q169 65 162 70 Q155 75 148 70 Q141 65 148 55Z" fill="rgba(53,107,210,0.25)" stroke="rgba(53,107,210,0.4)" stroke-width="0.8"/>
+          <text x="155" y="64" font-size="8" fill="rgba(53,107,210,0.8)" text-anchor="middle" font-family="Space Grotesk">IP</text>
+          <!-- LED -->
+          <circle cx="78" cy="42" r="3" fill="rgba(192,221,151,0.8)"/>
+          <circle cx="78" cy="42" r="6" fill="rgba(192,221,151,0.15)"/>
+          <!-- Wi-Fi -->
+          <path d="M138 58 Q150 47 162 58" stroke="rgba(29,158,117,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M143 65 Q150 57 157 65" stroke="rgba(29,158,117,0.5)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <circle cx="150" cy="71" r="2" fill="rgba(29,158,117,0.7)"/>
+          <!-- 브랜드 -->
+          <text x="100" y="178" font-family="Space Grotesk,sans-serif" font-size="7" fill="rgba(93,202,165,0.45)" text-anchor="middle" letter-spacing="2">CritterCatch</text>
+        </svg>
+      </div>
+      <div class="camp-badges">
+        <span class="cb">IPX4 방수</span>
+        <span class="cb">고리 내장</span>
+        <span class="cb">24h+ 배터리</span>
+        <span class="cb">올인원</span>
+        <span class="cb">Wi-Fi · 오프라인</span>
+      </div>
+    </div>
+
+    <div class="camp-features">
+      <div class="cf">
+        <div class="cf-icon">🔋</div>
+        <div>
+          <h4>대용량 배터리 (24시간 이상)</h4>
+          <p>집에서 충전하고 캠핑장에서 사용합니다. 콘센트 없이도 하룻밤 내내 작동해요.</p>
+        </div>
+      </div>
+      <div class="cf">
+        <div class="cf-icon">💧</div>
+        <div>
+          <h4>방수 IPX4 등급</h4>
+          <p>갑작스러운 비나 습기에도 안전합니다. 텐트 외부에 걸어도 괜찮아요.</p>
+        </div>
+      </div>
+      <div class="cf">
+        <div class="cf-icon">🪝</div>
+        <div>
+          <h4>고리 내장 · 어디든 걸기</h4>
+          <p>텐트 폴, 랜턴 걸이, 차박 손잡이 어디든 걸 수 있습니다. 바닥에 그냥 놔도 됩니다.</p>
+        </div>
+      </div>
+      <div class="cf">
+        <div class="cf-icon">🟣</div>
+        <div>
+          <h4>UV + IR 동시 탑재</h4>
+          <p>모기·파리는 UV로 유인하고, 바퀴벌레는 IR 카메라로 감지합니다. 기기 하나로 전부 해결.</p>
+        </div>
+      </div>
+      <div class="cf">
+        <div class="cf-icon">📶</div>
+        <div>
+          <h4>Wi-Fi 없어도 로컬 저장</h4>
+          <p>캠핑장에 Wi-Fi가 없어도 로컬에 감지 데이터를 저장합니다. 집 돌아와서 앱으로 확인 가능.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="sec-alt">
+  <div class="sec-alt-in">
+    <div class="eye">작동 방식</div>
+    <h2 class="st">전원 하나면 끝</h2>
+    <p class="ss">복잡한 설정 없습니다. 연결하면 자동으로 시작해요.</p>
+    <div class="steps">
+      <div class="step"><div class="step-n">STEP 01</div><div class="step-i">📡</div><h3>PIR 센서 대기</h3><p>저전력으로 열감지 대기. 움직임 포착 시 카메라가 즉시 켜집니다.</p></div>
+      <div class="step"><div class="step-n">STEP 02</div><div class="step-i">📷</div><h3>IR 카메라 촬영</h3><p>적외선 LED 4개로 어둠 속에서도 선명하게 촬영합니다.</p></div>
+      <div class="step"><div class="step-n">STEP 03</div><div class="step-i">🤖</div><h3>AI 판별</h3><p>YOLOv8이 바퀴벌레·모기·파리를 구별합니다. 오작동 최소화.</p></div>
+      <div class="step"><div class="step-n">STEP 04</div><div class="step-i">💧</div><h3>소량 자동 분사</h3><p>0.2ml 정밀 분사. 기존 대비 약품 80% 절약, 인체 노출 최소.</p></div>
+      <div class="step"><div class="step-n">STEP 05</div><div class="step-i">📱</div><h3>앱 알림 · 리포트</h3><p>Wi-Fi로 실시간 알림. 월간 통계와 위생 리포트 자동 생성.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLANS -->
+<section class="sec" id="plans">
+  <div class="eye">요금제</div>
+  <h2 class="st">필요한 만큼만<br/>선택하세요</h2>
+  <p class="ss">기기는 한 번 구매, 서비스는 용도에 맞게. 언제든 변경 가능합니다.</p>
+  <div class="plans-grid">
+    <div class="plan">
+      <div class="pn">실시간 보기</div>
+      <div class="pp">9,900<span>원/월</span></div>
+      <div class="pd">가정용 기본 · 실시간만</div>
+      <ul class="pf">
+        <li><span class="ck">✓</span>실시간 영상 스트리밍</li>
+        <li><span class="ck">✓</span>앱 푸시 알림</li>
+        <li><span class="ck">✓</span>감지 통계</li>
+        <li><span class="ck">✓</span>월간 리포트</li>
+      </ul>
+      <a href="/crittercatch/" class="btn-o" style="width:100%;text-align:center;display:block;">시작하기</a>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">가장 인기</div>
+      <div class="pn">실시간 + 저장</div>
+      <div class="pp">19,900<span>원/월</span></div>
+      <div class="pd">가정용 완전체</div>
+      <ul class="pf">
+        <li><span class="ck">✓</span>실시간 영상 스트리밍</li>
+        <li><span class="ck">✓</span>영상 클라우드 저장 (30일)</li>
+        <li><span class="ck">✓</span>앱 푸시 알림</li>
+        <li><span class="ck">✓</span>감지 통계 · 월간 리포트</li>
+        <li><span class="ck">✓</span>위생 리포트 출력</li>
+      </ul>
+      <a href="/crittercatch/" class="btn-p" style="width:100%;text-align:center;display:block;">시작하기</a>
+    </div>
+    <div class="plan">
+      <div class="pn">캠핑 · 오프라인</div>
+      <div class="pp">9,900<span>원/월</span></div>
+      <div class="pd">캠핑용 · 로컬 저장</div>
+      <ul class="pf">
+        <li><span class="ck">✓</span>로컬 데이터 저장</li>
+        <li><span class="ck">✓</span>귀가 후 앱 동기화</li>
+        <li><span class="ck">✓</span>감지 통계</li>
+        <li><span class="ck">✓</span>배터리 최적화 모드</li>
+      </ul>
+      <a href="/crittercatch/" class="btn-o" style="width:100%;text-align:center;display:block;">시작하기</a>
+    </div>
+    <div class="plan">
+      <div class="pn">업소용 B2B</div>
+      <div class="pp">49,000<span>원/월</span></div>
+      <div class="pd">식당·편의점·학교</div>
+      <ul class="pf">
+        <li><span class="ck">✓</span>기기 최대 10대</li>
+        <li><span class="ck">✓</span>태블릿 대시보드</li>
+        <li><span class="ck">✓</span>공식 위생 리포트</li>
+        <li><span class="ck">✓</span>식약처 점검 대비</li>
+        <li><span class="ck">✓</span>전담 CS 지원</li>
+      </ul>
+      <a href="mailto:hello@crittercatch.kr" class="btn-o" style="width:100%;text-align:center;display:block;">문의하기</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <div class="cta-bg"></div>
+  <h2>지금 바로<br/><span>시작해보세요</span></h2>
+  <p>첫 달 무료 체험 · 언제든 해지 가능 · 설치 10분</p>
+  <div class="cta-btns">
+    <a href="/crittercatch/" class="btn-p"><i class="ti ti-device-mobile"></i> 대시보드 바로가기</a>
+    <a href="#plans" class="btn-o">요금제 보기</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fl">CritterCatch</div>
+  <p>AI 스마트 해충 감지 & 퇴치 · 대한민국</p>
+  <p>© 2026 CritterCatch. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
