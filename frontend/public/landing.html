@@ -203,6 +203,26 @@ footer p{font-size:12px;color:var(--gray);}
   footer{flex-direction:column;text-align:center;}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+
+/* ── 후기 롤링 ── */
+.reviews-section{padding:80px 0;overflow:hidden;background:var(--dark2);}
+.reviews-inner{max-width:1060px;margin:0 auto;padding:0 24px;}
+.reviews-track-wrap{overflow:hidden;margin:0 -24px;position:relative;}
+.reviews-track-wrap::before,.reviews-track-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
+.reviews-track-wrap::before{left:0;background:linear-gradient(90deg,var(--dark2),transparent);}
+.reviews-track-wrap::after{right:0;background:linear-gradient(-90deg,var(--dark2),transparent);}
+.reviews-track{display:flex;gap:16px;width:max-content;animation:scroll-reviews 35s linear infinite;}
+.reviews-track:hover{animation-play-state:paused;}
+@keyframes scroll-reviews{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.review-card{width:280px;flex-shrink:0;background:var(--dark);border:0.5px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px;transition:border-color .2s;}
+.review-card:hover{border-color:rgba(93,202,165,0.3);}
+.review-stars{font-size:14px;margin-bottom:8px;letter-spacing:2px;}
+.review-content{font-size:13px;color:var(--gray-light);line-height:1.65;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.review-meta{display:flex;align-items:center;justify-content:space-between;}
+.review-name{font-family:var(--fd);font-size:13px;font-weight:500;color:#e8f0eb;}
+.review-cat{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(29,158,117,0.1);color:var(--mint-mid);}
+.reviews-cta{text-align:center;margin-top:28px;}
+
 </style>
 </head>
 <body>
@@ -781,6 +801,30 @@ footer p{font-size:12px;color:var(--gray);}
   </div>
 </section>
 
+
+<!-- ══ 후기 롤링 ══ -->
+<div class="reviews-section">
+  <div class="reviews-inner">
+    <div class="eye" data-i18n="reviews-eye" style="text-align:center;">사용자 후기</div>
+    <h2 class="st" data-i18n="reviews-h2" style="text-align:center;margin-bottom:8px;">실제 사용자들의<br/>생생한 후기</h2>
+    <p style="text-align:center;font-size:14px;color:var(--gray-light);margin-bottom:36px;" data-i18n="reviews-sub">직접 사용해본 분들의 솔직한 이야기입니다</p>
+  </div>
+
+  <div class="reviews-track-wrap">
+    <div class="reviews-track" id="reviews-track">
+      <!-- JS로 동적 생성 -->
+    </div>
+  </div>
+
+  <div class="reviews-inner">
+    <div class="reviews-cta">
+      <a href="/crittercatch/blog/review.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:50px;border:0.5px solid rgba(93,202,165,0.4);color:var(--mint-mid);text-decoration:none;font-family:var(--fd);font-size:14px;transition:background .2s;" onmouseover="this.style.background='rgba(29,158,117,0.1)'" onmouseout="this.style.background='transparent'" data-i18n-href="review-btn">
+        ✍️ <span data-i18n="review-btn">후기 작성하기</span>
+      </a>
+    </div>
+  </div>
+</div>
+
 <!-- CTA -->
 <div class="cta">
   <div class="cta-bg"></div>
@@ -899,6 +943,75 @@ function setLang(lang) {
 // 브라우저 언어 감지
 const browserLang = navigator.language.startsWith('ko') ? 'ko' : 'en'
 if (browserLang === 'en') setLang('en')
+</script>
+
+
+<script>
+const SB_URL_R = 'YOUR_SUPABASE_URL'
+const SB_KEY_R = 'YOUR_SUPABASE_ANON_KEY'
+
+const DUMMY_REVIEWS = [
+  {name:'김지은',rating:5,category:'home',content:'주방에 설치하고 한 달째인데 바퀴벌레가 싹 사라졌어요! 앱에서 감지 수가 줄어드는 게 눈에 보여서 너무 신기해요.',product:'바퀴벌레 감지기'},
+  {name:'이수민',rating:5,category:'baby',content:'아기방에 모빌형 달았는데 진짜 대박이에요. 베이비캠이랑 모기 퇴치기를 따로 살 필요가 없었어요. 울음 감지 알림도 너무 유용해요!',product:'아기 모빌형'},
+  {name:'박성호',rating:4,category:'biz',content:'식당에 설치했는데 식약처 점검 때 위생 리포트 보여주니까 바로 통과! 세스코보다 훨씬 저렴하고 데이터도 투명해서 좋아요.',product:'업소용'},
+  {name:'최유진',rating:5,category:'camp',content:'캠핑 갈 때마다 모기 때문에 힘들었는데 이거 하나로 해결됐어요. 텐트에 걸어두니까 아침에 일어나면 모기가 하나도 없어요!',product:'캠핑 올인원'},
+  {name:'정민재',rating:5,category:'home',content:'설치가 너무 쉬워요. QR 찍으니까 바로 앱이랑 연결되고 와이파이 설정도 간단해요. 디자인도 예뻐서 인테리어 같아요.',product:'바퀴벌레 감지기'},
+  {name:'한소영',rating:4,category:'baby',content:'아기 수면 모니터링 기능이 특히 마음에 들어요. 밤에 아기 방 안 들어가도 폰으로 확인할 수 있어서 편해요.',product:'아기 모빌형'},
+  {name:'오준석',rating:5,category:'camp',content:'차박할 때 필수템이 됐어요. 충전해서 차 안에 두면 모기 걱정 없이 잘 수 있어요. 바퀴벌레도 잡히는 게 신기해요.',product:'캠핑 올인원'},
+  {name:'임채원',rating:5,category:'biz',content:'편의점 운영하는데 무인이라 벌레 문제가 걱정이었어요. 이거 설치하고 나서 진짜 편해졌어요. 원격으로 확인도 되고요.',product:'업소용'},
+]
+
+const CAT_KO = {home:'가정용',biz:'업소용',camp:'캠핑용',baby:'아기용'}
+const CAT_EN = {home:'Home',biz:'Business',camp:'Camping',baby:'Baby'}
+
+function starStr(n){return '⭐'.repeat(n) + '☆'.repeat(5-n)}
+
+async function loadReviews() {
+  let reviews = DUMMY_REVIEWS
+  try {
+    const r = await fetch(`${SB_URL_R}/rest/v1/reviews?select=*&approved=eq.true&order=created_at.desc&limit=20`, {
+      headers:{apikey:SB_KEY_R,Authorization:`Bearer ${SB_KEY_R}`}
+    })
+    const data = await r.json()
+    if(data && data.length > 0) reviews = data
+  } catch(e){}
+  renderReviews(reviews)
+}
+
+function renderReviews(reviews) {
+  const track = document.getElementById('reviews-track')
+  if(!track) return
+  // 무한 롤링을 위해 2배 복제
+  const doubled = [...reviews, ...reviews]
+  const lang = document.documentElement.lang || 'ko'
+  track.innerHTML = doubled.map(r => `
+    <div class="review-card">
+      <div class="review-stars">${starStr(r.rating)}</div>
+      <div class="review-content">"${r.content}"</div>
+      <div class="review-meta">
+        <span class="review-name">${r.name}</span>
+        <span class="review-cat">${lang==='en' ? CAT_EN[r.category] : CAT_KO[r.category]}${r.product ? ' · '+r.product : ''}</span>
+      </div>
+    </div>
+  `).join('')
+}
+
+loadReviews()
+
+// i18n 추가
+const origSetLang = typeof setLang === 'function' ? setLang : null
+window.addEventListener('load', () => {
+  if(typeof I18N !== 'undefined'){
+    I18N.ko['reviews-eye'] = '사용자 후기'
+    I18N.ko['reviews-h2'] = '실제 사용자들의<br/>생생한 후기'
+    I18N.ko['reviews-sub'] = '직접 사용해본 분들의 솔직한 이야기입니다'
+    I18N.ko['review-btn'] = '후기 작성하기'
+    I18N.en['reviews-eye'] = 'User Reviews'
+    I18N.en['reviews-h2'] = 'Real stories from<br/>real users'
+    I18N.en['reviews-sub'] = 'Honest reviews from people who actually use it'
+    I18N.en['review-btn'] = 'Write a Review'
+  }
+})
 </script>
 
 </body>
